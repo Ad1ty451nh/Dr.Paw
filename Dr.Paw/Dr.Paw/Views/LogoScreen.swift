@@ -6,15 +6,15 @@
 //
 import SwiftUI
 
-struct SplashScreenView: View {
+struct LogoScreen: View {
     @State private var isActive = false
 
     var body: some View {
         if isActive {
-            ContentView()
+            SplashScreen()
         } else {
             ZStack {
-                Color.orange
+                Color(hex: "#FFEDD2")
                     .ignoresSafeArea()
 
                 VStack {
@@ -60,5 +60,5 @@ struct SplashScreenView: View {
 }
 
 #Preview {
-    SplashScreenView()
+    LogoScreen()
 }

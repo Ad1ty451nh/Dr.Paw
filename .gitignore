@@ -1,0 +1,10 @@
+.DS_Store
+
+# Xcode user-specific state
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+
+# Build products
+DerivedData/
+build/

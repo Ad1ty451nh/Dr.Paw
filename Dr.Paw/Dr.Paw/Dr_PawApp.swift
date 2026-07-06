@@ -11,7 +11,7 @@ import SwiftUI
 struct Dr_PawApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LogoScreen()
         }
     }
 }
