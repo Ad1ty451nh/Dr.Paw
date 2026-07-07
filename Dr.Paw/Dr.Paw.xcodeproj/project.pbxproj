@@ -10,6 +10,7 @@
 		6109714A2FFBBFF7009D9875 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610971492FFBBFF7009D9875 /* SignUpView.swift */; };
 		61541A252FFBABB40049D5C9 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61541A242FFBABB40049D5C9 /* ColorExtension.swift */; };
 		61541A272FFBB9D10049D5C9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61541A262FFBB9D10049D5C9 /* LoginView.swift */; };
+		61CD5FDC2FFD16A8006E4A32 /* onBoarding1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD5FDB2FFD16A8006E4A32 /* onBoarding1.swift */; };
 		84A5E0E12FF7D0A300E06FE3 /* LogoScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A5E0E02FF7D0A300E06FE3 /* LogoScreen.swift */; };
 		84A5E0E32FF7D0C800E06FE3 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A5E0E22FF7D0C800E06FE3 /* SplashScreen.swift */; };
 		84EB63182FE927BC0061BCA3 /* Dr_PawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EB63172FE927BC0061BCA3 /* Dr_PawApp.swift */; };
@@ -22,6 +23,7 @@
 		610971492FFBBFF7009D9875 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		61541A242FFBABB40049D5C9 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		61541A262FFBB9D10049D5C9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		61CD5FDB2FFD16A8006E4A32 /* onBoarding1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onBoarding1.swift; sourceTree = "<group>"; };
 		84A5E0E02FF7D0A300E06FE3 /* LogoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoScreen.swift; sourceTree = "<group>"; };
 		84A5E0E22FF7D0C800E06FE3 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		84EB63142FE927BC0061BCA3 /* Dr.Paw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dr.Paw.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,6 +44,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		61CD5FDA2FFD1650006E4A32 /* onBoarding */ = {
+			isa = PBXGroup;
+			children = (
+				61CD5FDB2FFD16A8006E4A32 /* onBoarding1.swift */,
+			);
+			path = onBoarding;
+			sourceTree = "<group>";
+		};
 		84643CD82FF7ADA300E87F23 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -72,6 +82,7 @@
 		84EB63162FE927BC0061BCA3 /* Dr.Paw */ = {
 			isa = PBXGroup;
 			children = (
+				61CD5FDA2FFD1650006E4A32 /* onBoarding */,
 				84643CD82FF7ADA300E87F23 /* Views */,
 				84EB63172FE927BC0061BCA3 /* Dr_PawApp.swift */,
 				61541A242FFBABB40049D5C9 /* ColorExtension.swift */,
@@ -160,6 +171,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61CD5FDC2FFD16A8006E4A32 /* onBoarding1.swift in Sources */,
 				61541A272FFBB9D10049D5C9 /* LoginView.swift in Sources */,
 				84A5E0E32FF7D0C800E06FE3 /* SplashScreen.swift in Sources */,
 				84A5E0E12FF7D0A300E06FE3 /* LogoScreen.swift in Sources */,
