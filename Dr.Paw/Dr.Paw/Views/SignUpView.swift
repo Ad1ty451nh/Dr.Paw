@@ -145,7 +145,6 @@ struct SignUpView: View {
                         }
                         .pickerStyle(.segmented)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal)
                         .background(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 22))
                         .overlay(
