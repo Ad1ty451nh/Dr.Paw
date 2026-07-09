@@ -172,8 +172,10 @@ struct SignUpView: View {
 
                             Text("Already have an account?")
 
-                            Button("Log In") {
-                                dismiss()
+                            NavigationLink{
+                                LoginView()
+                            } label: {
+                                Text("Log In")
                             }
                             .foregroundStyle(Color(hex: "#6D4093"))
                             .fontWeight(.bold)

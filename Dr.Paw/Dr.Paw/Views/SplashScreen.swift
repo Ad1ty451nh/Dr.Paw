@@ -61,6 +61,7 @@ struct SplashScreen: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

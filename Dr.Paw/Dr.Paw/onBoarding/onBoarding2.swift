@@ -1,13 +1,14 @@
 //
-//  onBoarding1.swift
+//  onBoarding2.swift
 //  Dr.Paw
 //
-//  Created by Adityasinh on 07/07/26.
+//  Created by Adityasinh on 09/07/26.
 //
+
 
 import SwiftUI
 
-struct onBoarding1: View {
+struct onBoarding2: View {
 
     var body: some View {
 
@@ -19,7 +20,7 @@ struct onBoarding1: View {
             VStack(spacing: 0) {
 
                 // Top Image
-                Image("BoardingImg1")
+                Image("BoardingImg2")
                     .resizable()
                     .scaledToFill()
                     .frame(height: 420)
@@ -39,13 +40,13 @@ struct onBoarding1: View {
                     .overlay {
                         VStack(spacing: 25) {
 
-                            Text("Welcome to Dr.Paw")
-                                .font(.system(size: 36, weight: .bold))
+                            Text("Find Trusted Petcare")
+                                .font(.system(size: 30, weight: .bold))
                                 .foregroundStyle(.white)
                                 .multilineTextAlignment(.center)
 
                             Text("""
-                Everything your pet needs in one place
+                Discover Best Food & Environment for your pets.
                 """)
                                 .font(.title3)
                                 .foregroundStyle(.white.opacity(0.9))
@@ -55,13 +56,13 @@ struct onBoarding1: View {
                             // Page Indicator
                             HStack(spacing: 10) {
 
-                                Capsule()
-                                    .fill(Color(hex: "#F79E1B"))
-                                    .frame(width: 30, height: 8)
-
                                 Circle()
                                     .fill(.white.opacity(0.7))
                                     .frame(width: 8)
+                                
+                                Capsule()
+                                    .fill(Color(hex: "#F79E1B"))
+                                    .frame(width: 30, height: 8)
 
                                 Circle()
                                     .fill(.white.opacity(0.7))
@@ -70,7 +71,7 @@ struct onBoarding1: View {
 
                             // Continue Button
                             NavigationLink{
-                                onBoarding2()
+                                onBoarding3()
                             } label: {
 
                                 Text("Continue")
@@ -109,10 +110,9 @@ struct onBoarding1: View {
             }
             .ignoresSafeArea(edges: .bottom)
         }
-        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
-    onBoarding1()
+    onBoarding2()
 }
