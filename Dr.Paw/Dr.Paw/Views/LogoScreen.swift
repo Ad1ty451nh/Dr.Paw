@@ -61,4 +61,5 @@ struct LogoScreen: View {
 
 #Preview {
     LogoScreen()
+        .environmentObject(UserSession())
 }

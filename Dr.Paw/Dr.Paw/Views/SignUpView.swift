@@ -10,9 +10,11 @@ import SwiftUI
 
 struct SignUpView: View {
 
+    @EnvironmentObject var session: UserSession
     @Environment(\.dismiss) var dismiss
 
     @State private var name = ""
+    @State private var nickname = ""
     @State private var email = ""
     @State private var password = ""
     @State private var isPasswordVisible = false
@@ -75,6 +77,24 @@ struct SignUpView: View {
                                 .foregroundStyle(.gray)
 
                             TextField("Full Name", text: $name)
+
+                        }
+                        .padding()
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 22))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 22)
+                                .stroke(Color(hex: "#6D4093").opacity(0.35), lineWidth: 2)
+                        )
+                        .padding(.horizontal)
+                        
+                        //UserName
+                        HStack {
+
+                            Image(systemName: "person")
+                                .foregroundStyle(.gray)
+
+                            TextField("Your Nickname", text: $nickname)
 
                         }
                         .padding()
@@ -155,7 +175,6 @@ struct SignUpView: View {
 
                         // Create Account Button
                         NavigationLink(destination: onBoarding1()) {
-
                             Text("Create Account")
                                 .font(.headline)
                                 .foregroundStyle(.white)
@@ -163,8 +182,10 @@ struct SignUpView: View {
                                 .frame(height: 60)
                                 .background(Color(hex: "#F79E1B"))
                                 .clipShape(Capsule())
-
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            session.nickname = nickname.trimmingCharacters(in: .whitespaces)
+                        })
                         .padding(.horizontal)
                         .shadow(color: .orange.opacity(0.25), radius: 15)
 
