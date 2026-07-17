@@ -26,11 +26,15 @@
 		616EB5BC2FFF8DCA0014C9E4 /* onBoarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616EB5BB2FFF8DCA0014C9E4 /* onBoarding2.swift */; };
 		616EB5BE2FFF91A50014C9E4 /* onBoarding3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616EB5BD2FFF91A50014C9E4 /* onBoarding3.swift */; };
 		61733FE63000FFE4000A8F47 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61733FE53000FFE4000A8F47 /* UserSession.swift */; };
+		61AF16F8300A4581000F1CA6 /* MyAnimals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AF16F7300A4581000F1CA6 /* MyAnimals.swift */; };
+		61AF16FA300A4597000F1CA6 /* ScanHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AF16F9300A4597000F1CA6 /* ScanHistory.swift */; };
+		61AF16FC300A45AF000F1CA6 /* Remainders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AF16FB300A45AF000F1CA6 /* Remainders.swift */; };
+		61AF16FE300A45C1000F1CA6 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AF16FD300A45C1000F1CA6 /* Storage.swift */; };
+		61AF1700300A45D6000F1CA6 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AF16FF300A45D6000F1CA6 /* About.swift */; };
 		61CD5FDC2FFD16A8006E4A32 /* onBoarding1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD5FDB2FFD16A8006E4A32 /* onBoarding1.swift */; };
 		84A5E0E12FF7D0A300E06FE3 /* LogoScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A5E0E02FF7D0A300E06FE3 /* LogoScreen.swift */; };
 		84A5E0E32FF7D0C800E06FE3 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A5E0E22FF7D0C800E06FE3 /* SplashScreen.swift */; };
 		84EB63182FE927BC0061BCA3 /* Dr_PawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EB63172FE927BC0061BCA3 /* Dr_PawApp.swift */; };
-		84EB631A2FE927BC0061BCA3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84EB63192FE927BC0061BCA3 /* ContentView.swift */; };
 		84EB631C2FE927BD0061BCA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84EB631B2FE927BD0061BCA3 /* Assets.xcassets */; };
 		84EB631F2FE927BD0061BCA3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84EB631E2FE927BD0061BCA3 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -55,12 +59,16 @@
 		616EB5BB2FFF8DCA0014C9E4 /* onBoarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onBoarding2.swift; sourceTree = "<group>"; };
 		616EB5BD2FFF91A50014C9E4 /* onBoarding3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onBoarding3.swift; sourceTree = "<group>"; };
 		61733FE53000FFE4000A8F47 /* UserSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
+		61AF16F7300A4581000F1CA6 /* MyAnimals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAnimals.swift; sourceTree = "<group>"; };
+		61AF16F9300A4597000F1CA6 /* ScanHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanHistory.swift; sourceTree = "<group>"; };
+		61AF16FB300A45AF000F1CA6 /* Remainders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Remainders.swift; sourceTree = "<group>"; };
+		61AF16FD300A45C1000F1CA6 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		61AF16FF300A45D6000F1CA6 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		61CD5FDB2FFD16A8006E4A32 /* onBoarding1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onBoarding1.swift; sourceTree = "<group>"; };
 		84A5E0E02FF7D0A300E06FE3 /* LogoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoScreen.swift; sourceTree = "<group>"; };
 		84A5E0E22FF7D0C800E06FE3 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		84EB63142FE927BC0061BCA3 /* Dr.Paw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dr.Paw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EB63172FE927BC0061BCA3 /* Dr_PawApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dr_PawApp.swift; sourceTree = "<group>"; };
-		84EB63192FE927BC0061BCA3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		84EB631B2FE927BD0061BCA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84EB631E2FE927BD0061BCA3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -103,6 +111,18 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		61AF16F6300A4558000F1CA6 /* ProfileScreens */ = {
+			isa = PBXGroup;
+			children = (
+				61AF16F7300A4581000F1CA6 /* MyAnimals.swift */,
+				61AF16F9300A4597000F1CA6 /* ScanHistory.swift */,
+				61AF16FB300A45AF000F1CA6 /* Remainders.swift */,
+				61AF16FD300A45C1000F1CA6 /* Storage.swift */,
+				61AF16FF300A45D6000F1CA6 /* About.swift */,
+			);
+			path = ProfileScreens;
+			sourceTree = "<group>";
+		};
 		61CD5FDA2FFD1650006E4A32 /* onBoarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,6 +137,7 @@
 		84643CD82FF7ADA300E87F23 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				61AF16F6300A4558000F1CA6 /* ProfileScreens */,
 				84A5E0E02FF7D0A300E06FE3 /* LogoScreen.swift */,
 				84A5E0E22FF7D0C800E06FE3 /* SplashScreen.swift */,
 				61541A262FFBB9D10049D5C9 /* LoginView.swift */,
@@ -158,7 +179,6 @@
 				84643CD82FF7ADA300E87F23 /* Views */,
 				84EB63172FE927BC0061BCA3 /* Dr_PawApp.swift */,
 				61541A242FFBABB40049D5C9 /* ColorExtension.swift */,
-				84EB63192FE927BC0061BCA3 /* ContentView.swift */,
 				84EB631B2FE927BD0061BCA3 /* Assets.xcassets */,
 				84EB631D2FE927BD0061BCA3 /* Preview Content */,
 			);
@@ -244,7 +264,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				61CD5FDC2FFD16A8006E4A32 /* onBoarding1.swift in Sources */,
+				61AF16FE300A45C1000F1CA6 /* Storage.swift in Sources */,
 				616EB5BC2FFF8DCA0014C9E4 /* onBoarding2.swift in Sources */,
+				61AF16F8300A4581000F1CA6 /* MyAnimals.swift in Sources */,
 				6110A0053000060000C0DEA1 /* NearbyVetClinicViewModel.swift in Sources */,
 				61541A272FFBB9D10049D5C9 /* LoginView.swift in Sources */,
 				611248DE3004EEAA0021C332 /* GrowthTrackerView.swift in Sources */,
@@ -252,15 +274,17 @@
 				61662D3730078291008CA460 /* AnimalData.swift in Sources */,
 				84A5E0E12FF7D0A300E06FE3 /* LogoScreen.swift in Sources */,
 				6109714A2FFBBFF7009D9875 /* SignUpView.swift in Sources */,
+				61AF16FC300A45AF000F1CA6 /* Remainders.swift in Sources */,
 				613A5F8F3004DECE006F3A06 /* HomeScreenView.swift in Sources */,
 				61733FE63000FFE4000A8F47 /* UserSession.swift in Sources */,
 				6110A0013000060000C0DEA1 /* VetClinic.swift in Sources */,
-				84EB631A2FE927BC0061BCA3 /* ContentView.swift in Sources */,
 				611248E03004EEB00021C332 /* CameraCaptureView.swift in Sources */,
 				6168697F2FFE52F100BE4342 /* TopRoundedRectangle.swift in Sources */,
 				6110A0033000060000C0DEA1 /* LocationManager.swift in Sources */,
 				611248DA3004EE980021C332 /* ScanResultView.swift in Sources */,
+				61AF1700300A45D6000F1CA6 /* About.swift in Sources */,
 				61662D3930078330008CA460 /* Animal.swift in Sources */,
+				61AF16FA300A4597000F1CA6 /* ScanHistory.swift in Sources */,
 				611248DC3004EEA10021C332 /* ProfileScreenView.swift in Sources */,
 				611248E23004EEB90021C332 /* AnimalLibraryView.swift in Sources */,
 				84EB63182FE927BC0061BCA3 /* Dr_PawApp.swift in Sources */,
