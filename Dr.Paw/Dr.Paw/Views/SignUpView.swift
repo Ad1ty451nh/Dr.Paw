@@ -19,6 +19,8 @@ struct SignUpView: View {
     @State private var password = ""
     @State private var isPasswordVisible = false
     @State private var gender = "Male"
+    @State private var isLoading = false
+    @State private var message: String?
 
     let genders = ["Male", "Female", "Other"]
 
@@ -174,7 +176,9 @@ struct SignUpView: View {
                         .padding(.horizontal)
 
                         // Create Account Button
-                        NavigationLink(destination: onBoarding1()) {
+                        Button {
+                            signUp()
+                        } label: {
                             Text("Create Account")
                                 .font(.headline)
                                 .foregroundStyle(.white)
@@ -183,11 +187,17 @@ struct SignUpView: View {
                                 .background(Color(hex: "#F79E1B"))
                                 .clipShape(Capsule())
                         }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            session.nickname = nickname.trimmingCharacters(in: .whitespaces)
-                        })
+                        .disabled(isLoading)
                         .padding(.horizontal)
                         .shadow(color: .orange.opacity(0.25), radius: 15)
+
+                        if let message {
+                            Text(message)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                        }
 
                         HStack {
 
@@ -209,6 +219,27 @@ struct SignUpView: View {
                 }
             }
             .navigationBarBackButtonHidden(true)
+        }
+    }
+
+    private func signUp() {
+        message = nil
+        let cleanedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !cleanedEmail.isEmpty,
+              password.count >= 6 else {
+            message = "Enter your name and email, and use a password with at least 6 characters."
+            return
+        }
+        isLoading = true
+        Task {
+            defer { isLoading = false }
+            do {
+                let signedIn = try await session.signUp(email: cleanedEmail, password: password, fullName: name, nickname: nickname)
+                if !signedIn { message = "Check your email to confirm your account, then log in." }
+            } catch {
+                message = error.localizedDescription
+            }
         }
     }
 }

@@ -12,8 +12,26 @@ struct Dr_PawApp: App {
 
     var body: some Scene {
         WindowGroup {
-            LogoScreen()
+            AppRootView()
                 .environmentObject(session)
+        }
+    }
+}
+
+private struct AppRootView: View {
+    @EnvironmentObject private var session: UserSession
+
+    var body: some View {
+        if session.isAuthenticated {
+            if session.shouldShowOnboarding {
+                NavigationStack {
+                    onBoarding1()
+                }
+            } else {
+                HomeScreenView()
+            }
+        } else {
+            LogoScreen()
         }
     }
 }

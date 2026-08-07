@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		6109714A2FFBBFF7009D9875 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610971492FFBBFF7009D9875 /* SignUpView.swift */; };
+		610F49A43021F72000636C4F /* View+LiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610F49A33021F72000636C4F /* View+LiquidGlass.swift */; };
+		620000013100000000000001 /* SupabaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620000013100000000000002 /* SupabaseAuthService.swift */; };
+		620000013100000000000003 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620000013100000000000004 /* KeychainStore.swift */; };
 		6110A0013000060000C0DEA1 /* VetClinic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6110A0003000060000C0DEA1 /* VetClinic.swift */; };
 		6110A0033000060000C0DEA1 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6110A0023000060000C0DEA1 /* LocationManager.swift */; };
 		6110A0053000060000C0DEA1 /* NearbyVetClinicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6110A0043000060000C0DEA1 /* NearbyVetClinicViewModel.swift */; };
@@ -41,6 +44,9 @@
 
 /* Begin PBXFileReference section */
 		610971492FFBBFF7009D9875 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		610F49A33021F72000636C4F /* View+LiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+LiquidGlass.swift"; sourceTree = "<group>"; };
+		620000013100000000000002 /* SupabaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAuthService.swift; sourceTree = "<group>"; };
+		620000013100000000000004 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		6110A0003000060000C0DEA1 /* VetClinic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetClinic.swift; sourceTree = "<group>"; };
 		6110A0023000060000C0DEA1 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		6110A0043000060000C0DEA1 /* NearbyVetClinicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyVetClinicViewModel.swift; sourceTree = "<group>"; };
@@ -99,6 +105,9 @@
 			isa = PBXGroup;
 			children = (
 				6110A0023000060000C0DEA1 /* LocationManager.swift */,
+				610F49A33021F72000636C4F /* View+LiquidGlass.swift */,
+				620000013100000000000002 /* SupabaseAuthService.swift */,
+				620000013100000000000004 /* KeychainStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -280,6 +289,9 @@
 				6110A0013000060000C0DEA1 /* VetClinic.swift in Sources */,
 				611248E03004EEB00021C332 /* CameraCaptureView.swift in Sources */,
 				6168697F2FFE52F100BE4342 /* TopRoundedRectangle.swift in Sources */,
+				610F49A43021F72000636C4F /* View+LiquidGlass.swift in Sources */,
+				620000013100000000000001 /* SupabaseAuthService.swift in Sources */,
+				620000013100000000000003 /* KeychainStore.swift in Sources */,
 				6110A0033000060000C0DEA1 /* LocationManager.swift in Sources */,
 				611248DA3004EE980021C332 /* ScanResultView.swift in Sources */,
 				61AF1700300A45D6000F1CA6 /* About.swift in Sources */,

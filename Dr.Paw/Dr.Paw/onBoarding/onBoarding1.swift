@@ -9,6 +9,8 @@ import SwiftUI
 
 struct onBoarding1: View {
 
+    @EnvironmentObject private var session: UserSession
+
     var body: some View {
 
         ZStack {
@@ -84,8 +86,8 @@ struct onBoarding1: View {
                             }
 
                             // Skip Button
-                            NavigationLink{
-                                HomeScreenView()
+                            Button {
+                                session.finishOnboarding()
                             } label: {
 
                                 Text("Skip")

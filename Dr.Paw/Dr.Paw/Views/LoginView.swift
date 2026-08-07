@@ -9,10 +9,13 @@ import SwiftUI
 struct LoginView: View {
 
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var session: UserSession
 
     @State private var email = ""
     @State private var password = ""
     @State private var isPasswordVisible = false
+    @State private var isLoading = false
+    @State private var message: String?
 
     var body: some View {
 
@@ -122,7 +125,7 @@ struct LoginView: View {
                     Spacer()
 
                     Button("Forgot Password") {
-
+                        resetPassword()
                     }
                     .foregroundStyle(.black)
 
@@ -130,7 +133,9 @@ struct LoginView: View {
                 .padding(.horizontal)
 
                 // Login Button
-                NavigationLink(destination: onBoarding1()) {
+                Button {
+                    login()
+                } label: {
 
                     Text("Log In")
                         .font(.headline)
@@ -141,8 +146,17 @@ struct LoginView: View {
                         .clipShape(Capsule())
 
                 }
+                .disabled(isLoading)
                 .padding(.horizontal)
                 .shadow(color: .orange.opacity(0.25), radius: 15)
+
+                if let message {
+                    Text(message)
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                }
 
                 Spacer()
 
@@ -165,6 +179,43 @@ struct LoginView: View {
             .padding(.top)
         }
         .navigationBarBackButtonHidden(true)
+    }
+
+    private func login() {
+        message = nil
+        let cleanedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanedEmail.isEmpty, !password.isEmpty else {
+            message = "Enter your email and password."
+            return
+        }
+        isLoading = true
+        Task {
+            defer { isLoading = false }
+            do {
+                try await session.signIn(email: cleanedEmail, password: password)
+            } catch {
+                message = error.localizedDescription
+            }
+        }
+    }
+
+    private func resetPassword() {
+        message = nil
+        let cleanedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanedEmail.isEmpty else {
+            message = "Enter your email first, then tap Forgot Password."
+            return
+        }
+        isLoading = true
+        Task {
+            defer { isLoading = false }
+            do {
+                try await session.resetPassword(email: cleanedEmail)
+                message = "If an account exists for this email, a reset link has been sent."
+            } catch {
+                message = error.localizedDescription
+            }
+        }
     }
 }
 
