@@ -19,6 +19,17 @@ struct ProfileScreenView: View {
 
         NavigationStack {
 
+        ZStack(alignment: .top) {
+
+            // Full-bleed cream color that always reaches behind the Dynamic Island,
+            // regardless of ScrollView/VStack nesting quirks
+            Color(hex: "#F9E7C8")
+                .frame(height: 340)
+                .ignoresSafeArea(edges: .top)
+                .clipShape(
+                    RoundedCorner(radius: 32, corners: [.bottomLeft, .bottomRight])
+                )
+
         ScrollView {
 
             VStack(spacing: 0) {
@@ -96,10 +107,7 @@ struct ProfileScreenView: View {
 
                 }
                 .frame(maxWidth: .infinity)
-                .background(Color(hex: "#F9E7C8"))
-                .clipShape(
-                    RoundedCorner(radius: 32, corners: [.bottomLeft, .bottomRight])
-                )
+                .padding(.top, 44) // pushes header content below the status bar / island safely
 
                 // Sections list
                 VStack(spacing: 0) {
@@ -134,8 +142,10 @@ struct ProfileScreenView: View {
 
         }
         .background(Color.white)
-        .ignoresSafeArea(edges: .top)
+
+        }
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showShareSheet) {
             // TODO: swap in a real branded share card per-animal later
             ActivityShareSheet(items: ["Check out Dr. Paws! 🐾"])
