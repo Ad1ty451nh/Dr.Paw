@@ -1,5 +1,5 @@
 //
-//  SplashScreenView.swift
+//  LogoScreen.swift
 //  Dr.Paw
 //
 //  Created by aditya on 03/07/26.

@@ -8,6 +8,20 @@ import SwiftUI
 
 @main
 struct Dr_PawApp: App {
+    
+    init() {
+        NotificationManager.shared.requestPermission()
+        
+        let templates = NotificationManager.shared.loadTemplates()
+        print(templates)
+        
+        NotificationManager.shared.scheduleNotification(
+            type: "treat",
+            petName: "Bruno",
+            after: 10
+        )
+    }
+    
     @StateObject private var session = UserSession()
 
     var body: some Scene {

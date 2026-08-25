@@ -24,30 +24,49 @@ struct HomeScreenView: View {
     @State private var capturedImage: UIImage?
     @State private var showScanResult = false
     @Namespace private var glassNamespace
+
+    // ACTIVE NAVBAR COLOR: change this value to update the selected tab icon,
+    // label, and its highlighted pill background.
+    private let activeTabColor = Color(hex: "#F79E1B")
  
     private var greetingName: String {
         session.nickname.isEmpty ? "Pet Parent" : session.nickname
     }
  
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Group {
-                switch selectedTab {
-                case .home:
-                    homeContent
-                case .growth:
-                    GrowthTrackerView()
-                case .library:
-                    AnimalLibraryView()
-                case .profile:
-                    ProfileScreenView()
+        TabView {
+            homeContent
+                .tabItem {
+                    Image(systemName: "house")
+                    Text("Home")
+                }
+
+            GrowthTrackerView()
+                .tabItem {
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                    Text("Growth")
+                }
+
+            CameraCaptureView { image in
+            }
+            .tabItem {
+                Image(systemName: "camera")
+                Text("Camera")
+            }
+
+            AnimalLibraryView()
+                .tabItem {
+                    Image(systemName: "pawprint")
+                    Text("Library")
+                }
+
+            ProfileScreenView()
+                .tabItem {
+                    Image(systemName: "person")
+                    Text("Profile")
                 }
             }
-            .animation(.easeInOut(duration: 0.25), value: selectedTab)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
- 
-            glassTabBar
-        }
+        .tint(.orange)
         .ignoresSafeArea(edges: .bottom)
         .fullScreenCover(isPresented: $showCamera) {
             CameraCaptureView { image in
@@ -190,168 +209,12 @@ struct HomeScreenView: View {
             }
         }
     }
- 
-    // MARK: - Liquid Glass Tab Bar
- 
-    @ViewBuilder
-    private var glassTabBar: some View {
-
-        if #available(iOS 26.0, *) {
-
-            GlassEffectContainer(spacing:16) {
-
-                tabBarRow
-                    .liquidGlass(
-                        in: RoundedRectangle(
-                            cornerRadius:34,
-                            style:.continuous
-                        )
-                    )
-                    .glassEffectID(
-                        "tabBar",
-                        in: glassNamespace
-                    )
-            }
-
-        } else {
-
-            tabBarRow
-                .liquidGlass(
-                    in: RoundedRectangle(
-                        cornerRadius:34,
-                        style:.continuous
-                    )
-                )
-
-        }
-    }
- 
-    private var tabBarRow: some View {
-        HStack(spacing: 8) {
-
-            tabButton(.home,
-                      systemImage: "house.fill",
-                      label: "Home")
-
-            tabButton(.growth,
-                      systemImage: "chart.line.uptrend.xyaxis",
-                      label: "Growth")
-
-            cameraButton
-                .padding(.horizontal, 8)
-
-            tabButton(.library,
-                      systemImage: "pawprint.fill",
-                      label: "Library")
-
-            tabButton(.profile,
-                      systemImage: "person.fill",
-                      label: "Profile")
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-    }
- 
-    private func tabButton(
-        _ tab: AppTab,
-        systemImage: String,
-        label: String
-    ) -> some View {
-
-        Button {
-
-            withAnimation(.spring(response: 0.4,
-                                  dampingFraction: 0.75)) {
-                selectedTab = tab
-            }
-
-        } label: {
-
-            VStack(spacing: 5) {
-
-                Image(systemName: systemImage)
-                    .font(.system(
-                        size: selectedTab == tab ? 27 : 22,
-                        weight: .semibold
-                    ))
-
-                Text(label)
-                    .font(.caption2)
-                    .fontWeight(.semibold)
-            }
-            .foregroundStyle(
-                selectedTab == tab
-                ? Color(hex:"#F79E1B")
-                : .gray
-            )
-            .frame(maxWidth: .infinity)
-            .padding(.vertical,10)
-
-            .background {
-
-                if selectedTab == tab {
-
-                    Capsule()
-                        .fill(.white.opacity(0.18))
-                        .matchedGeometryEffect(
-                            id: "ACTIVE_TAB",
-                            in: glassNamespace
-                        )
-
-                }
-
-            }
-
-            .offset(y: selectedTab == tab ? -10 : 0)
-
-            .scaleEffect(selectedTab == tab ? 1.08 : 1)
-
-        }
-        .buttonStyle(.plain)
-    }
- 
-    @ViewBuilder
-    private var cameraButton: some View {
-
-        Button {
-
-            showCamera = true
-
-        } label: {
-
-            let icon = Image(systemName: "camera.fill")
-                .font(.system(size: 28,
-                              weight: .bold))
-                .foregroundStyle(Color(hex:"#F79E1B"))
-                .frame(width:70,
-                       height:70)
-                .scaleEffect(showCamera ? 0.95 : 1)
-                .liquidGlass(
-                    in: Circle(),
-                    tint: Color(hex:"#F79E1B").opacity(0.18)
-                )
-
-            if #available(iOS 26.0, *) {
-
-                icon.glassEffectID(
-                    "cameraButton",
-                    in: glassNamespace
-                )
-
-            } else {
-
-                icon
-
-            }
-
-        }
-        .buttonStyle(.plain)
-        .offset(y:-22)
-    }
 }
- 
+
 #Preview {
     HomeScreenView()
         .environmentObject(UserSession())
 }
+
+
 
