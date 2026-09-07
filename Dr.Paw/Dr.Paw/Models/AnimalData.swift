@@ -86,14 +86,24 @@ enum AnimalData {
             specificTip: "Naturally low-activity — encourage regular play with toys to prevent the weight gain this breed is prone to."
         ),
         Animal(
-            name: "Indie Cat",
-            species: "Indian Domestic Cat",
+            name: "Ragdoll",
+            species: "Ragdoll Cat",
             category: .cat,
-            imageName: "Indie Cat",
-            idealEnvironment: "Highly adaptable to indoor or semi-outdoor life; hardy and resilient with just basic shelter and care.",
-            bestFood: "Balanced commercial cat food or home-cooked meals with cooked chicken or fish.",
-            foodToAvoid: "Milk, onions, garlic, chocolate, raw fish as a long-term staple (thiamine deficiency).",
-            specificTip: "Generally hardier with fewer breed-specific health issues, but still needs regular deworming and vaccination, especially if semi-stray in origin."
+            imageName: "Ragdoll",
+            idealEnvironment: "Indoor-only, calm household — known for being docile and going limp when held, hence the name.",
+            bestFood: "High-protein wet/dry food mix; prone to weight gain so portion control matters.",
+            foodToAvoid: "Milk, onions, garlic, chocolate, raw dough.",
+            specificTip: "Very trusting and low self-defense instinct — best kept strictly indoors, away from outdoor hazards."
+        ),
+        Animal(
+            name: "Maine Coon",
+            species: "Maine Coon Cat",
+            category: .cat,
+            imageName: "Maine Coon",
+            idealEnvironment: "Adaptable to indoor or supervised outdoor space; large breed that appreciates room to roam.",
+            bestFood: "High-protein diet suited to a larger-than-average body frame; large-breed cat formula if available.",
+            foodToAvoid: "Milk, onions, garlic, chocolate, raw dough.",
+            specificTip: "Prone to hypertrophic cardiomyopathy (a heart condition) — regular vet checkups are especially important for this breed."
         ),
 
         // MARK: Birds

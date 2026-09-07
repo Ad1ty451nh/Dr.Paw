@@ -18,7 +18,6 @@
 		611248DE3004EEAA0021C332 /* GrowthTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611248DD3004EEAA0021C332 /* GrowthTrackerView.swift */; };
 		611248E03004EEB00021C332 /* CameraCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611248DF3004EEB00021C332 /* CameraCaptureView.swift */; };
 		611248E23004EEB90021C332 /* AnimalLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611248E13004EEB90021C332 /* AnimalLibraryView.swift */; };
-		611FA8B9303D9CD800131789 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611FA8B8303D9CD700131789 /* TabView.swift */; };
 		613A5F8F3004DECE006F3A06 /* HomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613A5F8E3004DECE006F3A06 /* HomeScreenView.swift */; };
 		6151851A303C4E9800C728C0 /* NotificationTemplates.json in Resources */ = {isa = PBXBuildFile; fileRef = 61518519303C4E9000C728C0 /* NotificationTemplates.json */; };
 		6151851C303C4F5A00C728C0 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151851B303C4F5A00C728C0 /* NotificationManager.swift */; };
@@ -87,7 +86,6 @@
 		611248DD3004EEAA0021C332 /* GrowthTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthTrackerView.swift; sourceTree = "<group>"; };
 		611248DF3004EEB00021C332 /* CameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureView.swift; sourceTree = "<group>"; };
 		611248E13004EEB90021C332 /* AnimalLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalLibraryView.swift; sourceTree = "<group>"; };
-		611FA8B8303D9CD700131789 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		613A5F8E3004DECE006F3A06 /* HomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenView.swift; sourceTree = "<group>"; };
 		61518519303C4E9000C728C0 /* NotificationTemplates.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NotificationTemplates.json; sourceTree = "<group>"; };
 		6151851B303C4F5A00C728C0 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
@@ -240,7 +238,6 @@
 				611248DF3004EEB00021C332 /* CameraCaptureView.swift */,
 				6110A0063000060000C0DEA1 /* VetClinicCardView.swift */,
 				613A5F8E3004DECE006F3A06 /* HomeScreenView.swift */,
-				611FA8B8303D9CD700131789 /* TabView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,7 +429,6 @@
 				61662D3930078330008CA460 /* Animal.swift in Sources */,
 				61AF16FA300A4597000F1CA6 /* ScanHistory.swift in Sources */,
 				611248DC3004EEA10021C332 /* ProfileScreenView.swift in Sources */,
-				611FA8B9303D9CD800131789 /* TabView.swift in Sources */,
 				611248E23004EEB90021C332 /* AnimalLibraryView.swift in Sources */,
 				84EB63182FE927BC0061BCA3 /* Dr_PawApp.swift in Sources */,
 				61541A252FFBABB40049D5C9 /* ColorExtension.swift in Sources */,
@@ -471,7 +467,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.calcguj.Dr-Paw.DrPawWidget";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Adityasinh.Dr-Paw.DrPawWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -502,7 +498,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.calcguj.Dr-Paw.DrPawWidget";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Adityasinh.Dr-Paw.DrPawWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -644,6 +640,7 @@
 				DEVELOPMENT_TEAM = 544NCK9Q84;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to capture photos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Dr. Paws uses your location to find nearby vet clinics.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -655,7 +652,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.calcguj.Dr-Paw";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Adityasinh.Dr-Paw";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -674,6 +671,7 @@
 				DEVELOPMENT_TEAM = 544NCK9Q84;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to capture photos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Dr. Paws uses your location to find nearby vet clinics.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -685,7 +683,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.calcguj.Dr-Paw";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Adityasinh.Dr-Paw";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

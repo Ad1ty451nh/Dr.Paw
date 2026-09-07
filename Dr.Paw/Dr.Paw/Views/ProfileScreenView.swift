@@ -32,26 +32,21 @@ struct ProfileScreenView: View {
 
         ScrollView {
 
-            VStack(spacing: 0) {
+            VStack {
 
                 // Top header block
-                VStack(spacing: 16) {
+                VStack(spacing: 20) {
 
                         // Nav bar
-                        HStack {
+                        HStack(spacing: 0) {
 
-                            Button {
-                                dismiss()
-                            } label: {
-                                Image(systemName: "arrow.left")
-                                    .font(.title2)
-                                    .foregroundStyle(.black)
-                            }
+                           
 
                             Spacer()
 
                             Text("Profile")
                                 .font(.system(size: 24, weight: .bold))
+                                .padding(.leading,10)
 
                             Spacer()
 
@@ -107,7 +102,7 @@ struct ProfileScreenView: View {
 
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.top, 44) // pushes header content below the status bar / island safely
+                .padding(.top, 1) // pushes header content below the status bar / island safely
 
                 // Sections list
                 VStack(spacing: 0) {
