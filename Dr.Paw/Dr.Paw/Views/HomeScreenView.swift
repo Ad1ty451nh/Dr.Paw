@@ -25,6 +25,9 @@ struct HomeScreenView: View {
     @State private var showScanResult = false
     @Namespace private var glassNamespace
 
+    // Controls how many clinics are rendered at once — "Load More" adds 5 more each tap
+    @State private var visibleClinicCount = 5
+
     // ACTIVE NAVBAR COLOR: change this value to update the selected tab icon,
     // label, and its highlighted pill background.
     private let activeTabColor = Color(hex: "#F79E1B")
@@ -34,6 +37,7 @@ struct HomeScreenView: View {
     }
  
     var body: some View {
+        
         TabView {
             homeContent
                 .tabItem {
@@ -84,6 +88,7 @@ struct HomeScreenView: View {
             }
         }
     }
+    
  
     // MARK: - Home Tab Content (your original screen)
  
@@ -96,6 +101,8 @@ struct HomeScreenView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
                         headerView
+                        petSpaceView
+                        refreshButton
                         locationStatusView
                         clinicListView
                     }
@@ -117,39 +124,73 @@ struct HomeScreenView: View {
     }
  
     private var headerView: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Hello, \(greetingName)")
-                        .font(.title2.weight(.bold))
- 
-                    Text("Find animal doctors near you")
-                        .font(.subheadline)
-                        .foregroundStyle(.gray)
-                }
- 
-                Spacer()
- 
+        HStack {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Hello, \(greetingName)")
+                    .font(.title2.weight(.bold))
+
+                Text("Find animal doctors near you")
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+            }
+
+            Spacer()
+
+            // Profile circle — navigates to ProfileScreenView, same pattern as ProfileRow
+            NavigationLink(destination: ProfileScreenView()) {
                 Image("Drpaw")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 58, height: 58)
                     .clipShape(Circle())
             }
- 
-            Button {
-                locationManager.refreshLocation()
-            } label: {
-                Label("Refresh nearby clinics", systemImage: "location.circle.fill")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(Color(hex: "#F79E1B"))
-                    .clipShape(Capsule())
-            }
-            .shadow(color: .orange.opacity(0.22), radius: 12, x: 0, y: 8)
         }
+    }
+
+    // MARK: - Pet Space (4-card feature grid)
+
+    private var petSpaceView: some View {
+        VStack(alignment: .leading, spacing: 14) {
+
+            Text("Pet Space")
+                .font(.title3.weight(.bold))
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+
+                PetSpaceCard(icon: "scalemass.fill", title: "Weight & Height", tint: Color(hex: "#6D4093")) {
+                    WeightHeightTrackerView()
+                }
+
+                PetSpaceCard(icon: "cross.case.fill", title: "Medical Reminder", tint: Color(hex: "#F79E1B")) {
+                    MedicalReminderView()
+                }
+
+                PetSpaceCard(icon: "figure.walk", title: "Food & Walk", tint: Color(hex: "#3A264B")) {
+                    FoodWalkTrackerView()
+                }
+
+                PetSpaceCard(icon: "pawprint.fill", title: "Pets List", tint: Color(hex: "#6D4093")) {
+                    PetsListView()
+                }
+
+            }
+
+        }
+    }
+
+    private var refreshButton: some View {
+        Button {
+            locationManager.refreshLocation()
+        } label: {
+            Label("Refresh nearby clinics", systemImage: "location.circle.fill")
+                .font(.headline)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .background(Color(hex: "#F79E1B"))
+                .clipShape(Capsule())
+        }
+        .shadow(color: .orange.opacity(0.22), radius: 12, x: 0, y: 8)
     }
  
     @ViewBuilder
@@ -203,18 +244,80 @@ struct HomeScreenView: View {
                 Text("Nearby Animal Doctors")
                     .font(.title3.weight(.bold))
  
-                ForEach(clinicViewModel.clinics) { clinic in
+                ForEach(clinicViewModel.clinics.prefix(visibleClinicCount)) { clinic in
                     VetClinicCardView(clinic: clinic)
+                }
+
+                if visibleClinicCount < clinicViewModel.clinics.count {
+                    Button {
+                        visibleClinicCount += 5
+                    } label: {
+                        Text("Load More")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color(hex: "#6D4093"))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
                 }
             }
         }
     }
 }
 
+// MARK: - Pet Space feature card
+
+struct PetSpaceCard<Destination: View>: View {
+
+    let icon: String
+    let title: String
+    let tint: Color
+    @ViewBuilder let destination: () -> Destination
+
+    var body: some View {
+
+        NavigationLink(destination: destination()) {
+
+            VStack(alignment: .leading, spacing: 12) {
+
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(tint.opacity(0.15))
+                        .frame(width: 48, height: 48)
+
+                    Image(systemName: icon)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(tint)
+                }
+
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer(minLength: 0)
+
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, minHeight: 130, alignment: .topLeading)
+            .background(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(tint.opacity(0.16), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
+
+        }
+        .buttonStyle(.plain)
+
+    }
+}
+
 #Preview {
     HomeScreenView()
         .environmentObject(UserSession())
+        .environmentObject(PetStore(context: PersistenceController.shared.container.viewContext))
 }
-
-
-

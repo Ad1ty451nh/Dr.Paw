@@ -7,52 +7,48 @@
 import SwiftUI
 
 struct LogoScreen: View {
-    @State private var isActive = false
+    let onFinished: () -> Void
 
     var body: some View {
-        if isActive {
-            SplashScreen()
-        } else {
-            ZStack {
-                Color(hex: "#FFEDD2")
-                    .ignoresSafeArea()
+        ZStack {
+            Color(hex: "#FFEDD2")
+                .ignoresSafeArea()
 
-                VStack {
-                    // Top Cat Paws
-                    Image("catpaws")
+            VStack {
+                // Top Cat Paws
+                Image("catpaws")
+                    .resizable()
+                    .scaledToFit()
+                    .rotationEffect(.degrees(180))
+
+                Spacer()
+
+                // Logo + App Name
+                VStack(spacing: 10) {
+                    Image("Drpaw")
                         .resizable()
                         .scaledToFit()
-                        .rotationEffect(.degrees(180))
+                        .frame(width: 150, height: 150)
 
-                    Spacer()
-
-                    // Logo + App Name
-                    VStack(spacing: 10) {
-                        Image("Drpaw")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 150)
-
-                        Text("Dr. Paws")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                    }
-
-                    Spacer()
-
-                    // Bottom Cat Paws
-                    Image("catpaws")
-                        .resizable()
-                        .scaledToFit()
-                         // Flip for bottom
+                    Text("Dr. Paws")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                 }
+
+                Spacer()
+
+                // Bottom Cat Paws
+                Image("catpaws")
+                    .resizable()
+                    .scaledToFit()
+                     // Flip for bottom
             }
-            .ignoresSafeArea(edges: [.top, .bottom])
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    withAnimation {
-                        isActive = true
-                    }
+        }
+        .ignoresSafeArea(edges: [.top, .bottom])
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                withAnimation {
+                    onFinished()
                 }
             }
         }
@@ -60,6 +56,6 @@ struct LogoScreen: View {
 }
 
 #Preview {
-    LogoScreen()
+    LogoScreen(onFinished: {})
         .environmentObject(UserSession())
 }

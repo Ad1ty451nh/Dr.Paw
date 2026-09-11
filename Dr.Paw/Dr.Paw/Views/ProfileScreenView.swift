@@ -39,8 +39,16 @@ struct ProfileScreenView: View {
 
                         // Nav bar
                         HStack(spacing: 0) {
-
-                           
+                            
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "arrow.left")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundStyle(.black)
+                                    .frame(width: 44, height: 44)
+                                    .liquidGlass(in: Circle())
+                            }
 
                             Spacer()
 

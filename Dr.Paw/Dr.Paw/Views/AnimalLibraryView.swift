@@ -36,6 +36,7 @@ struct AnimalLibraryView: View {
                     .padding(.bottom, 92)
                 }
             }
+            
             .navigationTitle("Animal Library")
             .navigationBarTitleDisplayMode(.large)
             .navigationDestination(for: Animal.self) { animal in
@@ -52,9 +53,11 @@ struct AnimalCardView: View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .topTrailing) {
                 cardImage
+                    .aspectRatio(contentMode: .fill)
                     .frame(height: 110)
-                    .frame(maxWidth: .infinity)
+                    .frame(width:180)
                     .clipped()
+                    .shadow(radius: 5)
 
                 categoryBadge
                     .padding(8)
@@ -74,6 +77,7 @@ struct AnimalCardView: View {
         .background(.white)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 4)
+        .frame(maxWidth:180)
     }
 
     @ViewBuilder
@@ -154,13 +158,23 @@ struct AnimalDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-
+        // MARK:- Detail view image
     private var heroImage: some View {
         ZStack(alignment: .bottomLeading) {
             if UIImage(named: animal.imageName) != nil {
                 Image(animal.imageName)
                     .resizable()
                     .scaledToFill()
+                    .frame(maxWidth: 370)
+                    .cornerRadius(25)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 27, style: .continuous)
+                            .stroke(
+                                Color.black.opacity(0.5),
+                                lineWidth: 2.5
+                            )
+                            .shadow(color: .black, radius: 3)
+                    )
             } else {
                 LinearGradient(
                     colors: [Color(hex: "#6D4093"), Color(hex: "#F79E1B")],

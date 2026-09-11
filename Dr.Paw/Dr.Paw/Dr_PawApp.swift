@@ -11,9 +11,6 @@ import WidgetKit
 struct Dr_PawApp: App {
     
     init() {
-        // Ask WidgetKit for fresh entries whenever the app launches. This also
-        // clears a previously cached entry after the user changes the animal
-        // in Edit Widget.
         WidgetCenter.shared.reloadTimelines(ofKind: "DrPawWidget")
 
         NotificationManager.shared.requestPermission()
@@ -34,15 +31,23 @@ struct Dr_PawApp: App {
         WindowGroup {
             AppRootView()
                 .environmentObject(session)
+                .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                .environmentObject(PetStore(context: PersistenceController.shared.container.viewContext))
+                .environmentObject(WeightHeightStore(context: PersistenceController.shared.container.viewContext))
         }
     }
 }
 
 private struct AppRootView: View {
     @EnvironmentObject private var session: UserSession
+    @State private var splashFinished = false
 
     var body: some View {
-        if session.isAuthenticated {
+        if !splashFinished {
+            LogoScreen {
+                splashFinished = true
+            }
+        } else if session.isAuthenticated {
             if session.shouldShowOnboarding {
                 NavigationStack {
                     onBoarding1()
@@ -51,7 +56,7 @@ private struct AppRootView: View {
                 HomeScreenView()
             }
         } else {
-            LogoScreen()
+            SplashScreen() // your login/signup entry screen
         }
     }
 }
