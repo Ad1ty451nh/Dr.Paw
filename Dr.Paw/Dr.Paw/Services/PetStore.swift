@@ -75,6 +75,27 @@ final class PetStore: ObservableObject {
             select(firstPet)
         }
     }
+
+    func deleteAllData() {
+        let entityNames = ["WeightEntry", "HeightEntry", "Pet"]
+        for entityName in entityNames {
+            let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+            let request = NSBatchDeleteRequest(fetchRequest: fetch)
+            request.resultType = .resultTypeObjectIDs
+            do {
+                if let result = try context.execute(request) as? NSBatchDeleteResult,
+                   let objectIDs = result.result as? [NSManagedObjectID] {
+                    NSManagedObjectContext.mergeChanges(
+                        fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
+                        into: [context]
+                    )
+                }
+            } catch {
+                print("Failed to delete \(entityName): \(error)")
+            }
+        }
+        fetchPets()
+    }
     
     func updatePet(_ pet: Pet, name: String, species: String, breed: String?, photoData: Data?) {
         pet.name = name

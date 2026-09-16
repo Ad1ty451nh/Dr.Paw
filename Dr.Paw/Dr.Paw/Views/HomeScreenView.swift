@@ -64,10 +64,10 @@ struct HomeScreenView: View {
                     Text("Library")
                 }
 
-            ProfileScreenView()
+            SettingsView()
                 .tabItem {
-                    Image(systemName: "person")
-                    Text("Profile")
+                    Image(systemName: "gearshape")
+                    Text("Settings")
                 }
             }
         .tint(.orange)
@@ -136,15 +136,33 @@ struct HomeScreenView: View {
 
             Spacer()
 
-            // Profile circle — navigates to ProfileScreenView, same pattern as ProfileRow
             NavigationLink(destination: ProfileScreenView()) {
-                Image("Drpaw")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 58, height: 58)
-                    .clipShape(Circle())
+                homeProfileAvatar
             }
         }
+    }
+
+    private var homeProfileAvatar: some View {
+        Group {
+            if let image = UIImage(data: session.profileImageData), !session.profileImageData.isEmpty {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                Image(systemName: "person.crop.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(Color(hex: "#6D4093"))
+                    .padding(8)
+                    .background(Color(hex: "#6D4093").opacity(0.12))
+            }
+        }
+        .frame(width: 58, height: 58)
+        .clipShape(Circle())
+        .overlay(
+            Circle()
+                .stroke(Color(hex: "#F79E1B"), lineWidth: 2)
+        )
     }
 
     // MARK: - Pet Space (4-card feature grid)

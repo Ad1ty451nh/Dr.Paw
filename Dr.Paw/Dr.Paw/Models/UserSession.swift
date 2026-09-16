@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 @MainActor
 class UserSession: ObservableObject {
@@ -45,6 +46,13 @@ class UserSession: ObservableObject {
         KeychainStore.delete(account: "refreshToken")
         isAuthenticated = false
         shouldShowOnboarding = false
+    }
+
+    func deleteAccount() {
+        nickname = ""
+        email = ""
+        profileImageData = Data()
+        signOut()
     }
 
     func finishOnboarding() {

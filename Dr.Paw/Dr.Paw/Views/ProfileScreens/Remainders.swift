@@ -11,7 +11,7 @@ import UserNotifications
 struct Remainders: View {
 
     @Environment(\.dismiss) var dismiss
-    @State private var notificationsEnabled = false
+    @AppStorage("notificationsMasterEnabled") private var notificationsEnabled = true
     @State private var showPermissionAlert = false
 
     var body: some View {
@@ -166,7 +166,9 @@ struct Remainders: View {
     private func checkCurrentPermissionStatus() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
-                notificationsEnabled = settings.authorizationStatus == .authorized
+                if settings.authorizationStatus != .authorized {
+                    notificationsEnabled = false
+                }
             }
         }
     }

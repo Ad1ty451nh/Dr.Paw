@@ -6,6 +6,7 @@
 //
 import SwiftUI
 import CoreData
+import Combine
 
 
 struct WeightHeightTrackerView: View {
@@ -22,12 +23,17 @@ struct WeightHeightTrackerView: View {
     @State private var petAloneWeight = ""
     @State private var combinedWeight = ""
     @State private var ownerWeight = ""
-    @State private var weightUnit: WeightUnit = .kg
-
-    // Height state
-    @State private var heightUnit: HeightUnit = .cm
+    @State private var weightUnit: WeightUnit
+    @State private var heightUnit: HeightUnit
     @State private var heightPrimary = ""   // cm/inches value, or feet when unit == .feet
     @State private var heightInchesRemainder = "" // only used when unit == .feet
+
+    init() {
+        let weightRaw = UserDefaults.standard.string(forKey: "defaultWeightUnit") ?? WeightUnit.kg.rawValue
+        let heightRaw = UserDefaults.standard.string(forKey: "defaultHeightUnit") ?? HeightUnit.cm.rawValue
+        _weightUnit = State(initialValue: WeightUnit(rawValue: weightRaw) ?? .kg)
+        _heightUnit = State(initialValue: HeightUnit(rawValue: heightRaw) ?? .cm)
+    }
 
     var body: some View {
         NavigationStack {

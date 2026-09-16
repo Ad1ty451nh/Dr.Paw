@@ -10,7 +10,7 @@ import SwiftUI
 import WidgetKit
 
 struct DrPawWidgetControl: ControlWidget {
-    static let kind: String = "com.example.calcguj.Dr-Paw.DrPawWidget"
+    static let kind: String = "com.Adityasinh.Dr-Paw"
 
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(
@@ -71,7 +71,6 @@ struct StartTimerIntent: SetValueIntent {
     }
 
     func perform() async throws -> some IntentResult {
-        // Start the timer…
         return .result()
     }
 }

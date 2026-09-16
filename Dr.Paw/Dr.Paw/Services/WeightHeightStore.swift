@@ -58,6 +58,34 @@ final class WeightHeightStore: ObservableObject {
         fetchEntries(for: pet)
     }
 
+    func exportGrowthCSV(pets: [Pet]) -> String {
+        let formatter = ISO8601DateFormatter()
+        var lines = ["pet,type,date,value,unit"]
+
+        for pet in pets {
+            fetchEntries(for: pet)
+            let name = (pet.name ?? "Unnamed").replacingOccurrences(of: ",", with: " ")
+
+            for entry in weightEntries {
+                let date = entry.date.map { formatter.string(from: $0) } ?? ""
+                lines.append("\(name),weight,\(date),\(entry.valueKg),kg")
+            }
+
+            for entry in heightEntries {
+                let date = entry.date.map { formatter.string(from: $0) } ?? ""
+                lines.append("\(name),height,\(date),\(entry.valueCm),cm")
+            }
+        }
+
+        return lines.joined(separator: "\n")
+    }
+
+    func measurementCounts() -> (weights: Int, heights: Int) {
+        let weights = (try? context.count(for: WeightEntry.fetchRequest())) ?? 0
+        let heights = (try? context.count(for: HeightEntry.fetchRequest())) ?? 0
+        return (weights, heights)
+    }
+
     private func save() {
         do {
             try context.save()
