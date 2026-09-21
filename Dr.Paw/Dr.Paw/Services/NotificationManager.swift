@@ -117,4 +117,79 @@ final class NotificationManager {
             }
         }
     }
+    // MARK: - Safe scheduling (stable IDs, permission-checked, toggle-aware)
+
+    /// Call this once at the top of any scheduling function so we never
+    /// fire a request the user hasn't authorized.
+    func getAuthorizationStatus(completion: @escaping (Bool) -> Void) {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                completion(settings.authorizationStatus == .authorized)
+            }
+        }
+    }
+
+    /// One-shot notification tied to a specific future date (e.g. vet visit reminder).
+    /// `id` MUST be stable per-pet (e.g. "medical-\(petID)") so calling this again
+    /// replaces the old one instead of stacking duplicates.
+    func scheduleOneShot(id: String, title: String, body: String, fireDate: Date) {
+        getAuthorizationStatus { granted in
+            guard granted, fireDate > Date() else { return }
+
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+
+            let comps = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+            let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error { print("❌ scheduleOneShot failed:", error) }
+            }
+        }
+    }
+
+    /// Daily repeating notification at a fixed hour/minute (e.g. morning/evening food & walk).
+    /// `id` MUST be stable (e.g. "foodwalk-\(petID)-morning").
+    func scheduleDailyRepeating(id: String, title: String, body: String, hour: Int, minute: Int) {
+        getAuthorizationStatus { granted in
+            guard granted else { return }
+
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+
+            var comps = DateComponents()
+            comps.hour = hour
+            comps.minute = minute
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: true)
+            let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error { print("❌ scheduleDailyRepeating failed:", error) }
+            }
+        }
+    }
+
+    /// Cancel one specific reminder by its stable ID.
+    func cancel(id: String) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+    }
+
+    /// Cancel every pending reminder whose ID starts with `prefix` — use this
+    /// when a pet is deleted (e.g. prefix: "medical-\(petID)" or just "\(petID)"
+    /// if your IDs embed petID consistently).
+    func cancelAll(withPrefix prefix: String) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let matchingIDs = requests.map { $0.identifier }.filter { $0.hasPrefix(prefix) }
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: matchingIDs)
+        }
+    }
 }
