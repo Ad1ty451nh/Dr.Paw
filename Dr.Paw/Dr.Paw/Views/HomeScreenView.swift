@@ -16,6 +16,7 @@ enum AppTab {
  
 struct HomeScreenView: View {
     @EnvironmentObject var session: UserSession
+    @EnvironmentObject var deepLinkRouter: DeepLinkRouter
     @StateObject private var locationManager = LocationManager()
     @StateObject private var clinicViewModel = NearbyVetClinicViewModel()
  
@@ -72,6 +73,14 @@ struct HomeScreenView: View {
             }
         .tint(.orange)
         .ignoresSafeArea(edges: .bottom)
+        .sheet(item: $deepLinkRouter.destination) { destination in
+            switch destination {
+            case .foodWalk:
+                FoodWalkTrackerView()
+            case .medical:
+                MedicalReminderView()
+            }
+        }
         .fullScreenCover(isPresented: $showCamera) {
             CameraCaptureView { image in
                 showCamera = false
@@ -337,5 +346,6 @@ struct PetSpaceCard<Destination: View>: View {
 #Preview {
     HomeScreenView()
         .environmentObject(UserSession())
+        .environmentObject(DeepLinkRouter())
         .environmentObject(PetStore(context: PersistenceController.shared.container.viewContext))
 }

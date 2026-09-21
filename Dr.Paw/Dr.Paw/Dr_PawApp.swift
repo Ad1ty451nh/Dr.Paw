@@ -6,12 +6,17 @@
 //
 import SwiftUI
 import WidgetKit
+import RevenueCat
 
 @main
 struct Dr_PawApp: App {
     
     init() {
-        WidgetCenter.shared.reloadTimelines(ofKind: "DrPawWidget")
+        Purchases.logLevel = .debug
+        Purchases.configure(withAPIKey: "test_JQnjmzMvOmuUQcqbbUgmmgTflML")
+        
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind.foodWalk)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind.medicalVisit)
 
         NotificationManager.shared.requestPermission()
         
@@ -26,14 +31,21 @@ struct Dr_PawApp: App {
     }
     
     @StateObject private var session = UserSession()
+    @StateObject private var deepLinkRouter = DeepLinkRouter()
+    @StateObject private var subscriptionManager = SubscriptionManager()
 
     var body: some Scene {
         WindowGroup {
             AppRootView()
                 .environmentObject(session)
+                .environmentObject(deepLinkRouter)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(PetStore(context: PersistenceController.shared.container.viewContext))
                 .environmentObject(WeightHeightStore(context: PersistenceController.shared.container.viewContext))
+                .environmentObject(subscriptionManager)
+                .onOpenURL { url in
+                    deepLinkRouter.handle(url)
+                }
         }
     }
 }

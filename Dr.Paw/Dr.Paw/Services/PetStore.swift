@@ -37,6 +37,7 @@ final class PetStore: ObservableObject {
             if selectedPet == nil, let firstPet = pets.first {
                 select(firstPet)
             }
+            WidgetSharedStore.sync(from: pets)
         } catch {
             print("Failed to fetch pets: \(error)")
         }

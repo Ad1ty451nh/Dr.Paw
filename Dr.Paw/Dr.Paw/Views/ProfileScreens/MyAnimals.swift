@@ -9,7 +9,9 @@ import SwiftUI
 
 struct MyAnimals: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject var petStore: PetStore
+    @StateObject private var timerManager = PetTimeActivityManager.shared
 
     var body: some View {
         ZStack {
@@ -65,12 +67,18 @@ struct MyAnimals: View {
                     ScrollView {
                         VStack(spacing: 14) {
                             ForEach(petStore.pets, id: \.objectID) { pet in
-                                NavigationLink {
-                                    PetDetailsView(pet: pet)
-                                } label: {
-                                    animalRow(pet)
+                                VStack(alignment: .leading, spacing: 9) {
+                                    NavigationLink {
+                                        PetDetailsView(pet: pet)
+                                    } label: {
+                                        animalRow(pet)
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    if let petID = pet.id?.uuidString {
+                                        timerControls(for: pet, petID: petID)
+                                    }
                                 }
-                                .buttonStyle(.plain)
                             }
                         }
                         .padding(.horizontal)
@@ -80,6 +88,14 @@ struct MyAnimals: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            timerManager.refresh()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                timerManager.refresh()
+            }
+        }
     }
 
     private func animalRow(_ pet: Pet) -> some View {
@@ -120,6 +136,55 @@ struct MyAnimals: View {
         .padding(14)
         .background(.white)
         .clipShape(RoundedRectangle(cornerRadius: 18))
+    }
+
+    private func timerControls(for pet: Pet, petID: String) -> some View {
+        let timer = timerManager.timer(for: petID)
+        let canStart = timerManager.canStartTimer(for: petID)
+
+        return HStack(spacing: 8) {
+            Button {
+                timerManager.start(
+                    petID: petID,
+                    petName: pet.name ?? "Unnamed",
+                    breed: pet.breed ?? pet.species ?? ""
+                )
+            } label: {
+                Label("Start", systemImage: "play.fill")
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(Color(hex: "#6D4093"))
+            .disabled(!canStart)
+
+            Button {
+                if timer?.isPaused == true {
+                    timerManager.resume(petID: petID)
+                } else {
+                    timerManager.pause(petID: petID)
+                }
+            } label: {
+                Label(timer?.isPaused == true ? "Resume" : "Pause", systemImage: timer?.isPaused == true ? "play.fill" : "pause.fill")
+            }
+            .buttonStyle(.bordered)
+            .disabled(timer == nil)
+
+            Button(role: .destructive) {
+                timerManager.stop(petID: petID)
+            } label: {
+                Label("Stop", systemImage: "stop.fill")
+            }
+            .buttonStyle(.bordered)
+            .disabled(timer == nil)
+
+            Spacer(minLength: 0)
+
+            if timerManager.timers.count >= PetTimeActivityManager.maximumConcurrentActivities && timer == nil {
+                Text("3 active timers")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .font(.caption.weight(.semibold))
     }
 }
 
