@@ -16,7 +16,7 @@ class SubscriptionManager: ObservableObject {
     @Published var isPro: Bool = false
     @Published var offerings: Offerings?
     @Published var isLoading: Bool = false
-    @Published var trialDaysRemaining: Int = Self.trialLengthDays
+    @Published var trialDaysRemaining: Int = SubscriptionManager.trialLengthDays
 
     // The single source of truth for "should this person see the app right now?"
     var hasAccess: Bool {

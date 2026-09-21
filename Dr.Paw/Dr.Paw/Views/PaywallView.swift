@@ -8,6 +8,10 @@ import SwiftUI
 import RevenueCat
 
 struct PaywallView: View {
+    // Defaults to true so existing call sites (e.g. #Preview) keep working
+    // unchanged. Pass false only for the post-trial hard wall in AppRootView.
+    var isDismissable: Bool = true
+
     @EnvironmentObject var subscriptionManager: SubscriptionManager
     @Environment(\.dismiss) var dismiss
 
@@ -56,6 +60,18 @@ struct PaywallView: View {
         }
     }
 
+    // Reflects live trial state instead of a static sentence, so the same
+    // hero header works both mid-trial (dismissable) and post-trial (hard wall).
+    private var trialStatusText: String {
+        if subscriptionManager.isPro {
+            return "You're all set with Dr Paw Pro."
+        } else if subscriptionManager.trialDaysRemaining > 0 {
+            return "\(subscriptionManager.trialDaysRemaining) day\(subscriptionManager.trialDaysRemaining == 1 ? "" : "s") left in your free trial."
+        } else {
+            return "Your free trial has ended. Subscribe to keep using Dr Paw."
+        }
+    }
+
     // MARK: - Background
 
     private var paywallBackground: some View {
@@ -81,16 +97,22 @@ struct PaywallView: View {
 
     private var topControls: some View {
         HStack {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Color.appTextSecondary)
-                    .frame(width: 34, height: 34)
-                    .background(Color.appSurface)
-                    .clipShape(Circle())
-                    .shadow(color: .black.opacity(0.05), radius: 6, y: 3)
+            if isDismissable {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(Color.appTextSecondary)
+                        .frame(width: 34, height: 34)
+                        .background(Color.appSurface)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.05), radius: 6, y: 3)
+                }
+            } else {
+                // Keeps Restore pinned to the same trailing position
+                // whether or not the X button is showing.
+                Color.clear.frame(width: 34, height: 34)
             }
 
             Spacer()
@@ -138,7 +160,7 @@ struct PaywallView: View {
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
 
-                Text("Unlimited scans, the full care library, and complete growth history.")
+                Text(trialStatusText)
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.85))
                     .frame(maxWidth: 240, alignment: .leading)
