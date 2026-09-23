@@ -8,113 +8,184 @@
 import SwiftUI
 
 struct onBoarding3: View {
-
+    
     @EnvironmentObject private var session: UserSession
-
+    
     var body: some View {
-
         ZStack {
-
-            Color(hex: "#ECE9E7")
+            // MARK: - Background
+            
+            Color.appBackground
                 .ignoresSafeArea()
-
+            
+            // MARK: - Top Image
+            
             VStack(spacing: 0) {
-
-                // Top Image
                 Image("BoardingImg3")
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 420)
+                    .frame(
+                        maxWidth: .infinity,
+                        minHeight: 390,
+                        maxHeight: 430
+                    )
                     .clipped()
-
+                
                 Spacer()
             }
             
+            // MARK: - Bottom Content
+            
             VStack {
-
                 Spacer()
-
-                // Bottom Card
-                TopRoundedRectangle(radius: 45)
-                    .fill(Color(hex: "#3A264B"))
-                    .frame(height: 420)
-                    .overlay {
-                        VStack(spacing: 25) {
-
-                            Text("Take care of Your Pet")
-                                .font(.system(size: 30, weight: .bold))
-                                .foregroundStyle(.white)
-                                .multilineTextAlignment(.center)
-
-                            Text("""
-                Identify Animals and birds in one click
-                """)
-                                .font(.title3)
-                                .foregroundStyle(.white.opacity(0.9))
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-
-                            // Page Indicator
-                            HStack(spacing: 10) {
-
-                                Circle()
-                                    .fill(.white.opacity(0.7))
-                                    .frame(width: 8)
-                                
-
-                                Circle()
-                                    .fill(.white.opacity(0.7))
-                                    .frame(width: 8)
-                                
-                                Capsule()
-                                    .fill(Color(hex: "#F79E1B"))
-                                    .frame(width: 30, height: 8)
-                            }
-
-                            // Continue Button
-                            Button {
-                                session.finishOnboarding()
-                            } label: {
-
-                                Text("Continue")
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 60)
-                                    .background(Color(hex: "#F79E1B"))
-                                    .clipShape(Capsule())
-
-                            }
-
-                            // Skip Button
-                            Button {
-                                session.finishOnboarding()
-                            } label: {
-
-                                Text("Skip")
-                                    .font(.headline)
-                                    .foregroundStyle(Color(hex: "#F79E1B"))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 60)
-                                    .overlay(
-                                        Capsule()
-                                            .stroke(Color(hex: "#F79E1B"), lineWidth: 3)
-                                    )
-
-                            }
-
-                            Spacer()
-
-                        }
-                        .padding(.horizontal, 30)
-                        .padding(.top, 45)
-                    }
+                
+                bottomCard
             }
             .ignoresSafeArea(edges: .bottom)
         }
+        .navigationBarBackButtonHidden(true)
+    }
+    
+    // MARK: - Bottom Card
+    
+    private var bottomCard: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 22) {
+                
+                // MARK: Title
+                
+                Text("Take Care of Your Pet")
+                    .font(
+                        .system(
+                            size: 32,
+                            weight: .bold,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(Color.appTextPrimary)
+                    .multilineTextAlignment(.center)
+                
+                // MARK: Subtitle
+                
+                Text("Identify animals and birds with just one click.")
+                    .font(
+                        .system(
+                            size: 17,
+                            weight: .medium,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(Color.appTextSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 10)
+                
+                // MARK: Page Indicator
+                
+                pageIndicator
+                
+                // MARK: Continue
+                
+                Button {
+                    session.finishOnboarding()
+                } label: {
+                    Text("Continue")
+                        .font(
+                            .system(
+                                size: 17,
+                                weight: .bold,
+                                design: .rounded
+                            )
+                        )
+                        .foregroundStyle(Color.appOnAccent)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 58)
+                        .background(Color.appAccent)
+                        .clipShape(
+                            RoundedRectangle(
+                                cornerRadius: 18,
+                                style: .continuous
+                            )
+                        )
+                        .shadow(
+                            color: Color.appElevatedShadow,
+                            radius: 10,
+                            x: 0,
+                            y: 5
+                        )
+                }
+                
+                // MARK: Skip
+                
+                Button {
+                    session.finishOnboarding()
+                } label: {
+                    Text("Skip")
+                        .font(
+                            .system(
+                                size: 16,
+                                weight: .semibold,
+                                design: .rounded
+                            )
+                        )
+                        .foregroundStyle(Color.appBrand)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 56)
+                        .background(Color.clear)
+                        .overlay {
+                            RoundedRectangle(
+                                cornerRadius: 18,
+                                style: .continuous
+                            )
+                            .stroke(
+                                Color.appBorder,
+                                lineWidth: 1.5
+                            )
+                        }
+                }
+            }
+            .padding(.horizontal, 28)
+            .padding(.top, 34)
+            .padding(.bottom, 34)
+        }
+        .frame(maxWidth: .infinity)
+        .background(
+            Color.appSurface
+                .clipShape(
+                    TopRoundedRectangle(radius: 40)
+                )
+        )
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Color.appHairline)
+                .frame(height: 1)
+                .clipShape(Capsule())
+                .padding(.horizontal, 70)
+        }
+    }
+    
+    // MARK: - Page Indicator
+    
+    private var pageIndicator: some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(Color.appAccent.opacity(0.35))
+                .frame(width: 7, height: 7)
+            
+            Circle()
+                .fill(Color.appAccent.opacity(0.35))
+                .frame(width: 7, height: 7)
+            
+            Capsule()
+                .fill(Color.appBrand)
+                .frame(width: 28, height: 7)
+        }
+        .padding(.vertical, 4)
     }
 }
 
 #Preview {
-    onBoarding3()
+    NavigationStack {
+        onBoarding3()
+            .environmentObject(UserSession())
+    }
 }

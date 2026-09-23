@@ -60,6 +60,11 @@ struct HomeScreenView: View {
                 }
 
             CameraCaptureView { image in
+                guard let image else { return }
+                capturedImage = image
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    showScanResult = true
+                }
             }
             .tabItem {
                 Image(systemName: "camera")

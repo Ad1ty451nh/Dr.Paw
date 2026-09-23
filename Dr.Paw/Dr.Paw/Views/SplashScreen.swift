@@ -47,7 +47,7 @@ private extension SplashScreen {
     }
     
     var content: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(spacing: 0) {
             Spacer()
             
             VStack(alignment: .leading, spacing: 10) {
@@ -68,6 +68,7 @@ private extension SplashScreen {
                     .foregroundStyle(Color.appTextSecondary)
                     .lineSpacing(4)
             }
+            .padding(.trailing,70)
             
             Spacer()
             Spacer()
@@ -76,14 +77,15 @@ private extension SplashScreen {
             buttons
             
             Spacer()
-                .frame(height: 30)
+                .frame(height: 50)
         }
         .padding(.horizontal, 24)
+        
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     var buttons: some View {
-        VStack(spacing: 14) {
+        VStack(alignment: .leading,spacing: 14) {
             NavigationLink(destination: LoginView()) {
                 Text("Log In")
                     .font(.system(
@@ -130,7 +132,7 @@ private extension SplashScreen {
             }
         }
         .frame(maxWidth: 320)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
     }
 }
 

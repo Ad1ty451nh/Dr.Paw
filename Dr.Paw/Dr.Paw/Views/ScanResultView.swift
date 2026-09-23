@@ -7,39 +7,34 @@
 //
 
 import SwiftUI
-
 struct ScanResultView: View {
     @Environment(\.dismiss) private var dismiss
     let image: UIImage
 
+    @State private var matchedAnimal: Animal?
+    @State private var isAnalyzing = true
+    @State private var noMatchMessage: String?
+
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "#ECE9E7")
-                    .ignoresSafeArea()
-
+                Color(hex: "#ECE9E7").ignoresSafeArea()
                 VStack(spacing: 20) {
                     Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
+                        .resizable().scaledToFit()
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .padding(.horizontal)
-                        .padding(.top, 12)
+                        .padding(.horizontal).padding(.top, 12)
 
-                    // TODO: Replace with real CoreML/Vision classification
-                    VStack(spacing: 8) {
-                        Text("Analyzing…")
-                            .font(.headline)
-                        Text("Not sure yet — pick manually")
-                            .font(.subheadline)
-                            .foregroundStyle(.gray)
+                    if isAnalyzing {
+                        ProgressView("Analyzing…")
+                    } else if let noMatchMessage {
+                        Text(noMatchMessage)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 18))
+                            .padding(.horizontal)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .padding(.horizontal)
-
                     Spacer()
                 }
             }
@@ -50,10 +45,24 @@ struct ScanResultView: View {
                     Button("Close") { dismiss() }
                 }
             }
+            // Programmatic redirect — fires the moment a match is found
+            .navigationDestination(item: $matchedAnimal) { animal in
+                AnimalDetailView(animal: animal)
+            }
+            .onAppear {
+                AnimalClassifier.classify(image) { rawLabel, confidence in
+                    DispatchQueue.main.async {
+                        isAnalyzing = false
+                        if let rawLabel, let animal = ClassifierLabelMap.lookup(rawLabel) {
+                            matchedAnimal = animal
+                        } else {
+                            noMatchMessage = rawLabel == nil
+                                ? "Couldn't identify this animal confidently."
+                                : "Recognized as \(rawLabel!), but it's not in our library yet."
+                        }
+                    }
+                }
+            }
         }
     }
-}
-
-#Preview {
-    ScanResultView(image: UIImage(systemName: "pawprint.fill") ?? UIImage())
 }
