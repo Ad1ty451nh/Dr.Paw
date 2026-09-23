@@ -4,6 +4,10 @@
 //
 //  Created by Adityasinh on 06/07/26.
 //
+//  UI PASS: restyled to the new neutral appBackground/appSurface/appBrand
+//  palette (see ColorExtension.swift) instead of the old hardcoded hex
+//  colors. Every field, the gender picker, and signUp() are unchanged.
+//
 
 
 import SwiftUI
@@ -30,7 +34,7 @@ struct SignUpView: View {
 
             ZStack {
 
-                Color(hex: "#ECE9E7")
+                Color.appBackground
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -45,7 +49,7 @@ struct SignUpView: View {
                             } label: {
                                 Image(systemName: "arrow.left")
                                     .font(.title2)
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(Color.appTextPrimary)
                             }
 
                             Spacer()
@@ -63,10 +67,11 @@ struct SignUpView: View {
 
                             Text("Sign Up")
                                 .font(.system(size: 40, weight: .bold))
+                                .foregroundStyle(Color.appTextPrimary)
 
                             Text("Create your account")
                                 .font(.title3)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color.appTextSecondary)
 
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -76,17 +81,18 @@ struct SignUpView: View {
                         HStack {
 
                             Image(systemName: "person")
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color.appTextSecondary)
 
                             TextField("Full Name", text: $name)
+                                .foregroundStyle(Color.appTextPrimary)
 
                         }
                         .padding()
-                        .background(.white)
+                        .background(Color.appSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 22))
                         .overlay(
                             RoundedRectangle(cornerRadius: 22)
-                                .stroke(Color(hex: "#6D4093").opacity(0.35), lineWidth: 2)
+                                .stroke(Color.appAccent.opacity(0.35), lineWidth: 2)
                         )
                         .padding(.horizontal)
                         
@@ -94,17 +100,18 @@ struct SignUpView: View {
                         HStack {
 
                             Image(systemName: "person")
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color.appTextSecondary)
 
                             TextField("Your Nickname", text: $nickname)
+                                .foregroundStyle(Color.appTextPrimary)
 
                         }
                         .padding()
-                        .background(.white)
+                        .background(Color.appSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 22))
                         .overlay(
                             RoundedRectangle(cornerRadius: 22)
-                                .stroke(Color(hex: "#6D4093").opacity(0.35), lineWidth: 2)
+                                .stroke(Color.appAccent.opacity(0.35), lineWidth: 2)
                         )
                         .padding(.horizontal)
 
@@ -112,20 +119,21 @@ struct SignUpView: View {
                         HStack {
 
                             Image(systemName: "envelope")
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color.appTextSecondary)
 
                             TextField("example@gmail.com", text: $email)
                                 .keyboardType(.emailAddress)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
+                                .foregroundStyle(Color.appTextPrimary)
 
                         }
                         .padding()
-                        .background(.white)
+                        .background(Color.appSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 22))
                         .overlay(
                             RoundedRectangle(cornerRadius: 22)
-                                .stroke(Color(hex: "#6D4093").opacity(0.35), lineWidth: 2)
+                                .stroke(Color.appAccent.opacity(0.35), lineWidth: 2)
                         )
                         .padding(.horizontal)
 
@@ -133,12 +141,14 @@ struct SignUpView: View {
                         HStack {
 
                             Image(systemName: "lock")
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color.appTextSecondary)
 
                             if isPasswordVisible {
                                 TextField("Password", text: $password)
+                                    .foregroundStyle(Color.appTextPrimary)
                             } else {
                                 SecureField("Password", text: $password)
+                                    .foregroundStyle(Color.appTextPrimary)
                             }
 
                             Spacer()
@@ -147,16 +157,16 @@ struct SignUpView: View {
                                 isPasswordVisible.toggle()
                             } label: {
                                 Image(systemName: isPasswordVisible ? "eye" : "eye.slash")
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color.appTextSecondary)
                             }
 
                         }
                         .padding()
-                        .background(.white)
+                        .background(Color.appSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 22))
                         .overlay(
                             RoundedRectangle(cornerRadius: 22)
-                                .stroke(Color(hex: "#6D4093").opacity(0.35), lineWidth: 2)
+                                .stroke(Color.appAccent.opacity(0.35), lineWidth: 2)
                         )
                         .padding(.horizontal)
 
@@ -167,11 +177,11 @@ struct SignUpView: View {
                         }
                         .pickerStyle(.segmented)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.white)
+                        .background(Color.appSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 22))
                         .overlay(
                             RoundedRectangle(cornerRadius: 22)
-                                .stroke(Color(hex: "#6D4093").opacity(0.35), lineWidth: 2)
+                                .stroke(Color.appAccent.opacity(0.35), lineWidth: 2)
                         )
                         .padding(.horizontal)
 
@@ -184,12 +194,12 @@ struct SignUpView: View {
                                 .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 60)
-                                .background(Color(hex: "#F79E1B"))
+                                .background(Color.appBrandGradient)
                                 .clipShape(Capsule())
                         }
                         .disabled(isLoading)
                         .padding(.horizontal)
-                        .shadow(color: .orange.opacity(0.25), radius: 15)
+                        .shadow(color: Color.appBrand.opacity(0.25), radius: 15)
 
                         if let message {
                             Text(message)
@@ -202,13 +212,14 @@ struct SignUpView: View {
                         HStack {
 
                             Text("Already have an account?")
+                                .foregroundStyle(Color.appTextSecondary)
 
                             NavigationLink{
                                 LoginView()
                             } label: {
                                 Text("Log In")
                             }
-                            .foregroundStyle(Color(hex: "#6D4093"))
+                            .foregroundStyle(Color.appAccent)
                             .fontWeight(.bold)
 
                         }

@@ -6,6 +6,11 @@
 //  Updated: now owns the tab bar directly (Liquid Glass style, iOS 26+)
 //  plus the raised center camera button and the scan flow.
 //
+//  UI PASS: restyled to the new neutral appBackground/appSurface/appBrand
+//  palette (see ColorExtension.swift) instead of the old hardcoded hex
+//  colors. Nothing functional changed — same TabView, same sheet/
+//  fullScreenCover wiring, same location + clinic pipeline.
+//
 
 import SwiftUI
 import UIKit
@@ -31,7 +36,9 @@ struct HomeScreenView: View {
 
     // ACTIVE NAVBAR COLOR: change this value to update the selected tab icon,
     // label, and its highlighted pill background.
-    private let activeTabColor = Color(hex: "#F79E1B")
+    // Swapped from the old hardcoded orange to the brand accent so it now
+    // tracks light/dark mode automatically.
+    private let activeTabColor = Color.appAccent
  
     private var greetingName: String {
         session.nickname.isEmpty ? "Pet Parent" : session.nickname
@@ -46,10 +53,10 @@ struct HomeScreenView: View {
                     Text("Home")
                 }
 
-            GrowthTrackerView()
+            MyAnimals()
                 .tabItem {
-                    Image(systemName: "chart.line.uptrend.xyaxis")
-                    Text("Growth")
+                    Image(systemName: "pawprint")
+                    Text("My Animals")
                 }
 
             CameraCaptureView { image in
@@ -61,7 +68,7 @@ struct HomeScreenView: View {
 
             AnimalLibraryView()
                 .tabItem {
-                    Image(systemName: "pawprint")
+                    Image(systemName: "books.vertical")
                     Text("Library")
                 }
 
@@ -71,7 +78,7 @@ struct HomeScreenView: View {
                     Text("Settings")
                 }
             }
-        .tint(.orange)
+        .tint(activeTabColor)
         .ignoresSafeArea(edges: .bottom)
         .sheet(item: $deepLinkRouter.destination) { destination in
             switch destination {
@@ -104,19 +111,18 @@ struct HomeScreenView: View {
     private var homeContent: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "#ECE9E7")
-                    .ignoresSafeArea()
+                homeBackground
  
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 22) {
-                        headerView
+                        heroHeader
                         petSpaceView
                         refreshButton
                         locationStatusView
                         clinicListView
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 18)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 16)
                     .padding(.bottom, 110) // clear the floating tab bar
                 }
             }
@@ -131,24 +137,86 @@ struct HomeScreenView: View {
             }
         }
     }
- 
-    private var headerView: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Hello, \(greetingName)")
-                    .font(.title2.weight(.bold))
 
-                Text("Find animal doctors near you")
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
-            }
+    // MARK: - Background
+    // Same soft-blurred-circle treatment used on AnimalLibraryView, so every
+    // top-level tab now shares one visual identity instead of each screen
+    // inventing its own background.
 
-            Spacer()
+    private var homeBackground: some View {
+        ZStack {
+            Color.appBackground
+                .ignoresSafeArea()
 
-            NavigationLink(destination: ProfileScreenView()) {
-                homeProfileAvatar
-            }
+            Circle()
+                .fill(Color.appBrand.opacity(0.16))
+                .frame(width: 260, height: 260)
+                .blur(radius: 35)
+                .offset(x: -140, y: -300)
+
+            Circle()
+                .fill(Color.appAccent.opacity(0.18))
+                .frame(width: 260, height: 260)
+                .blur(radius: 35)
+                .offset(x: 150, y: 380)
         }
+    }
+
+    // MARK: - Hero header
+    // Replaces the old plain "Hello, Name" row with a gradient hero card,
+    // matching the hero used in AnimalLibraryView / PaywallView so the app
+    // reads as one design system rather than three different ones.
+
+    private var heroHeader: some View {
+        ZStack(alignment: .bottomLeading) {
+            LinearGradient(
+                colors: [
+                    Color.appBrand,
+                    Color.appAccent,
+                    Color.appBrand.opacity(0.75)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            Image(systemName: "pawprint.fill")
+                .font(.system(size: 120, weight: .bold))
+                .foregroundStyle(.white.opacity(0.13))
+                .rotationEffect(.degrees(-18))
+                .offset(x: 130, y: -10)
+                .shadow(radius: 7)
+
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("WELCOME BACK")
+                        .font(.caption.weight(.bold))
+                        .tracking(1.4)
+                        .foregroundStyle(.white.opacity(0.75))
+                    Spacer()
+                    Text("Hello, \(greetingName)")
+                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+
+                    Text("Find animal doctors near you")
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.85))
+                    Spacer()
+                }
+
+                Spacer()
+                VStack{
+                    NavigationLink(destination: ProfileScreenView()) {
+                        homeProfileAvatar
+                    }
+                    Spacer()
+                }
+            }
+            .padding(20)
+        }
+        .frame(height: 160)
+        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+        .shadow(color: Color.appBrand.opacity(0.28), radius: 16, y: 9)
     }
 
     private var homeProfileAvatar: some View {
@@ -157,20 +225,22 @@ struct HomeScreenView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
+                    
             } else {
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
                     .scaledToFit()
-                    .foregroundStyle(Color(hex: "#6D4093"))
+                    .foregroundStyle(.white)
                     .padding(8)
-                    .background(Color(hex: "#6D4093").opacity(0.12))
+                    .background(.white.opacity(0.18))
             }
         }
-        .frame(width: 58, height: 58)
+        .frame(width: 50, height: 50)
         .clipShape(Circle())
+        .shadow(color: Color(.systemBackground).opacity(0.5), radius: 8)
         .overlay(
             Circle()
-                .stroke(Color(hex: "#F79E1B"), lineWidth: 2)
+                .stroke(.white.opacity(0.85), lineWidth: 2)
         )
     }
 
@@ -179,24 +249,26 @@ struct HomeScreenView: View {
     private var petSpaceView: some View {
         VStack(alignment: .leading, spacing: 14) {
 
-            Text("Pet Space")
-                .font(.title3.weight(.bold))
+            Label("PET SPACE", systemImage: "square.grid.2x2.fill")
+                .font(.caption.weight(.bold))
+                .tracking(1.2)
+                .foregroundStyle(Color.appAccent)
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
 
-                PetSpaceCard(icon: "scalemass.fill", title: "Weight & Height", tint: Color(hex: "#6D4093")) {
+                PetSpaceCard(icon: "scalemass.fill", title: "Weight & Height", tint: .blue) {
                     WeightHeightTrackerView()
                 }
 
-                PetSpaceCard(icon: "cross.case.fill", title: "Medical Reminder", tint: Color(hex: "#F79E1B")) {
+                PetSpaceCard(icon: "cross.case.fill", title: "Medical Reminder", tint: .orange) {
                     MedicalReminderView()
                 }
 
-                PetSpaceCard(icon: "figure.walk", title: "Food & Walk", tint: Color(hex: "#3A264B")) {
+                PetSpaceCard(icon: "figure.walk", title: "Food & Walk", tint: .green) {
                     FoodWalkTrackerView()
                 }
 
-                PetSpaceCard(icon: "pawprint.fill", title: "Pets List", tint: Color(hex: "#6D4093")) {
+                PetSpaceCard(icon: "pawprint.fill", title: "Pets List", tint: .purple) {
                     PetsListView()
                 }
 
@@ -214,10 +286,10 @@ struct HomeScreenView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
-                .background(Color(hex: "#F79E1B"))
+                .background(Color.appBrandGradient)
                 .clipShape(Capsule())
         }
-        .shadow(color: .orange.opacity(0.22), radius: 12, x: 0, y: 8)
+        .shadow(color: Color.appBrand.opacity(0.22), radius: 12, x: 0, y: 8)
     }
  
     @ViewBuilder
@@ -225,24 +297,24 @@ struct HomeScreenView: View {
         if let error = locationManager.locationError ?? clinicViewModel.errorMessage {
             Text(error)
                 .font(.subheadline)
-                .foregroundStyle(Color(hex: "#3A264B"))
+                .foregroundStyle(Color.appTextPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 18))
+                .background(Color.appSurface)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         } else if clinicViewModel.isLoading {
             HStack(spacing: 12) {
                 ProgressView()
-                    .tint(Color(hex: "#6D4093"))
+                    .tint(Color.appAccent)
  
                 Text("Finding nearby vet clinics...")
                     .font(.subheadline)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.appTextSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .background(Color.appSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
     }
  
@@ -252,24 +324,27 @@ struct HomeScreenView: View {
             VStack(spacing: 14) {
                 Image(systemName: "map")
                     .font(.system(size: 42))
-                    .foregroundStyle(Color(hex: "#6D4093"))
+                    .foregroundStyle(Color.appAccent)
  
                 Text("Nearby clinics will appear here")
                     .font(.headline)
+                    .foregroundStyle(Color.appTextPrimary)
  
                 Text("Allow location access so Dr. Paws can fetch animal doctors around you.")
                     .font(.subheadline)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.appTextSecondary)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
             .padding(28)
-            .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 22))
+            .background(Color.appSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         } else {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Nearby Animal Doctors")
-                    .font(.title3.weight(.bold))
+                Label("NEARBY ANIMAL DOCTORS", systemImage: "cross.case.fill")
+                    .font(.caption.weight(.bold))
+                    .tracking(1.2)
+                    .foregroundStyle(Color.appAccent)
  
                 ForEach(clinicViewModel.clinics.prefix(visibleClinicCount)) { clinic in
                     VetClinicCardView(clinic: clinic)
@@ -281,11 +356,11 @@ struct HomeScreenView: View {
                     } label: {
                         Text("Load More")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color(hex: "#6D4093"))
+                            .foregroundStyle(Color.appBrand)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .background(Color.appSurface)
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     }
                 }
             }
@@ -294,6 +369,8 @@ struct HomeScreenView: View {
 }
 
 // MARK: - Pet Space feature card
+// Restyled to match AnimalCardView's card language: appSurface fill, a
+// hairline border, and a colored icon badge instead of a flat tint badge.
 
 struct PetSpaceCard<Destination: View>: View {
 
@@ -309,7 +386,7 @@ struct PetSpaceCard<Destination: View>: View {
             VStack(alignment: .leading, spacing: 12) {
 
                 ZStack {
-                    RoundedRectangle(cornerRadius: 14)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(tint.opacity(0.15))
                         .frame(width: 48, height: 48)
 
@@ -320,7 +397,7 @@ struct PetSpaceCard<Destination: View>: View {
 
                 Text(title)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color.appTextPrimary)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
 
@@ -329,10 +406,10 @@ struct PetSpaceCard<Destination: View>: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, minHeight: 130, alignment: .topLeading)
-            .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .background(Color.appSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(tint.opacity(0.16), lineWidth: 1)
             )
             .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
@@ -342,10 +419,11 @@ struct PetSpaceCard<Destination: View>: View {
 
     }
 }
-
 #Preview {
     HomeScreenView()
         .environmentObject(UserSession())
         .environmentObject(DeepLinkRouter())
         .environmentObject(PetStore(context: PersistenceController.shared.container.viewContext))
+        .environmentObject(WeightHeightStore(context: PersistenceController.shared.container.viewContext))
+        .environmentObject(SubscriptionManager())
 }

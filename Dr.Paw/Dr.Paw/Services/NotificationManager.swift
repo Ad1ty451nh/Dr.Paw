@@ -192,4 +192,51 @@ final class NotificationManager {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: matchingIDs)
         }
     }
+
+    // MARK: - Fixed daily schedule (hardcoded times, no spam, replaces dynamic slot scheduling)
+
+    /// Schedules the full fixed daily routine for one pet: food x2, walk x2, pet time x1.
+    /// Safe to call repeatedly (e.g. every screen appearance) — same 5 stable IDs get
+    /// replaced, never duplicated.
+    func scheduleFixedDailyRoutine(petID: String, petName: String) {
+        scheduleDailyRepeating(
+            id: "food-morning-\(petID)",
+            title: "Dr.Paw 🐾",
+            body: "Time for \(petName)'s breakfast!",
+            hour: 9, minute: 0
+        )
+        scheduleDailyRepeating(
+            id: "food-evening-\(petID)",
+            title: "Dr.Paw 🐾",
+            body: "Time for \(petName)'s dinner!",
+            hour: 19, minute: 0
+        )
+        scheduleDailyRepeating(
+            id: "walk-morning-\(petID)",
+            title: "Dr.Paw 🐾",
+            body: "Morning walk time for \(petName)!",
+            hour: 7, minute: 0
+        )
+        scheduleDailyRepeating(
+            id: "walk-evening-\(petID)",
+            title: "Dr.Paw 🐾",
+            body: "Evening walk time for \(petName)!",
+            hour: 18, minute: 30
+        )
+        scheduleDailyRepeating(
+            id: "pettime-\(petID)",
+            title: "Dr.Paw 🐾",
+            body: "Spend 30 minutes with \(petName) today! ❤️",
+            hour: 13, minute: 0
+        )
+    }
+
+    /// Cancels the full fixed daily routine for one pet — call this on delete or when toggled off.
+    func cancelFixedDailyRoutine(petID: String) {
+        cancel(id: "food-morning-\(petID)")
+        cancel(id: "food-evening-\(petID)")
+        cancel(id: "walk-morning-\(petID)")
+        cancel(id: "walk-evening-\(petID)")
+        cancel(id: "pettime-\(petID)")
+    }
 }

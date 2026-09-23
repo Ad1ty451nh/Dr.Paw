@@ -4,47 +4,30 @@
 //
 //  Created by aditya on 03/07/26.
 //
+
 import SwiftUI
 
 struct LogoScreen: View {
+    
     let onFinished: () -> Void
-
+    
     var body: some View {
         ZStack {
-            Color(hex: "#FFEDD2")
-                .ignoresSafeArea()
-
-            VStack {
-                // Top Cat Paws
-                Image("catpaws")
-                    .resizable()
-                    .scaledToFit()
-                    .rotationEffect(.degrees(180))
-
+            background
+            
+            VStack(spacing: 0) {
+                topPaws
+                
                 Spacer()
-
-                // Logo + App Name
-                VStack(spacing: 10) {
-                    Image("Drpaw")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 150, height: 150)
-
-                    Text("Dr. Paws")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                }
-
+                
+                logoContent
+                
                 Spacer()
-
-                // Bottom Cat Paws
-                Image("catpaws")
-                    .resizable()
-                    .scaledToFit()
-                     // Flip for bottom
+                
+                bottomPaws
             }
         }
-        .ignoresSafeArea(edges: [.top, .bottom])
+        .ignoresSafeArea()
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 withAnimation {
@@ -54,6 +37,66 @@ struct LogoScreen: View {
         }
     }
 }
+
+// MARK: - UI Components
+
+private extension LogoScreen {
+    
+    var background: some View {
+        Color.appBackground
+            .ignoresSafeArea()
+    }
+    
+    var topPaws: some View {
+        Image("catpaws")
+            .resizable()
+            .scaledToFit()
+            .rotationEffect(.degrees(180))
+            .opacity(0.9)
+            .frame(maxWidth: .infinity)
+    }
+    
+    var bottomPaws: some View {
+        Image("catpaws")
+            .resizable()
+            .scaledToFit()
+            .opacity(0.9)
+            .frame(maxWidth: .infinity)
+    }
+    
+    var logoContent: some View {
+        VStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color.appSurface)
+                    .frame(width: 190, height: 190)
+                    .shadow(
+                        color: Color.appElevatedShadow,
+                        radius: 20,
+                        x: 0,
+                        y: 10
+                    )
+                
+                Image("Drpaw")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 145, height: 145)
+            }
+            
+            VStack(spacing: 4) {
+                Text("Dr. Paws")
+                    .font(.system(size: 36, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.appTextPrimary)
+                
+                Text("Your offline pet health companion")
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.appTextSecondary)
+            }
+        }
+    }
+}
+
+// MARK: - Preview
 
 #Preview {
     LogoScreen(onFinished: {})

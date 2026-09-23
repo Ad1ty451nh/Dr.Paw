@@ -67,6 +67,9 @@ final class PetStore: ObservableObject {
 
     func delete(_ pet: Pet) {
         let wasSelected = pet.isSelected
+        if let id = pet.id?.uuidString {
+            NotificationManager.shared.cancelFixedDailyRoutine(petID: id)
+        }
         context.delete(pet)
         save()
         fetchPets()

@@ -28,7 +28,6 @@ struct PaywallView: View {
                     
                     heroHeader
                         .padding(.top,40)
-                    benefitsCard
                     packagesSection
                     ctaButton
 
@@ -156,41 +155,35 @@ struct PaywallView: View {
                     .tracking(1.4)
                     .foregroundStyle(.white.opacity(0.75))
 
-                Text("Unlock Full\nPet Care")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                Text("Unlock Full Pet Care")
+
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .fontDesign(.rounded)
                     .foregroundStyle(.white)
+                    
 
                 Text(trialStatusText)
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.85))
                     .frame(maxWidth: 240, alignment: .leading)
+                
+                Label("WHAT YOU GET", systemImage: "sparkles")
+                    .font(.footnote.weight(.bold))
+                        .tracking(1.3)
+                        .foregroundStyle(Color.white)
+
+                BenefitRow(icon: "pawprint.fill", title: "Unlimited breed scans", color: .orange.opacity(0.7))
+                    BenefitRow(icon: "chart.line.uptrend.xyaxis", title: "Complete growth history", color: .green.opacity(0.7))
             }
             .padding(22)
-            .padding(.top, 20)
         }
-        .frame(height: 230)
+        .frame(height: 250)
         .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         .shadow(color: Color.appBrand.opacity(0.28), radius: 16, y: 9)
+        .padding(.vertical,25)
     }
 
-    // MARK: - Benefits
-
-    private var benefitsCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Label("WHAT YOU GET", systemImage: "sparkles")
-                .font(.caption.weight(.bold))
-                .tracking(1.3)
-                .foregroundStyle(Color.appAccent)
-
-            BenefitRow(icon: "pawprint.fill", title: "Unlimited breed scans", color: .orange)
-            BenefitRow(icon: "cross.case.fill", title: "Full symptom & vet library", color: .blue)
-            BenefitRow(icon: "chart.line.uptrend.xyaxis", title: "Complete growth history", color: .green)
-        }
-        .padding(18)
-        .background(Color.appSurface)
-        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .shadow(color: .black.opacity(0.05), radius: 9, y: 4)
-    }
 
     // MARK: - Packages
 
@@ -304,7 +297,7 @@ private struct BenefitRow: View {
 
             Text(title)
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Color.appTextPrimary)
+                .foregroundStyle(Color.white.opacity(0.85))
 
             Spacer()
         }

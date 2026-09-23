@@ -4,66 +4,137 @@
 //
 //  Created by admin on 03/07/26.
 //
+
 import SwiftUI
 
 struct SplashScreen: View {
+    
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             ZStack {
-                Color(hex: "#ECE9E7")
-                    .ignoresSafeArea()
+                background
                 
-                Image("dog")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 500, height: 850)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                    .offset(x:24)
-                    .ignoresSafeArea()
-                VStack(alignment: .leading,spacing: 15){
-                    Spacer()
-                    
-                    Text("Dr.Paw")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    
-                    Text("""
-                    Care and services for your pets.
-                    Helping your pets stay happy
-                    and safe
-                    """)
-                    Spacer()
-                    Spacer()
-                    Spacer()
-                    Spacer()
-                    
-                    
-                    NavigationLink(destination: LoginView()){
-                        Text("Log In")
-                            .frame(maxWidth: 300)
-                            .frame(height: 60)
-                            .background(Color(hex: "#E68457"))
-                            .foregroundStyle(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .padding()
-                    }
-                    
-                    NavigationLink(destination: SignUpView()){
-                        Text("Sign Up")
-                            .frame(maxWidth: 300)
-                            .frame(height: 60)
-                            .background(Color(hex: "#9CB080"))
-                            .foregroundStyle(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .padding()
-                            .padding(.bottom,30)
-                    }
-                }
+                dogImage
+                
+                content
             }
         }
         .navigationBarBackButtonHidden(true)
     }
 }
+
+// MARK: - UI Components
+
+private extension SplashScreen {
+    
+    var background: some View {
+        Color.appBackground
+            .ignoresSafeArea()
+    }
+    
+    var dogImage: some View {
+        Image("dog")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 500, height: 850)
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .bottomTrailing
+            )
+            .offset(x: 24)
+            .ignoresSafeArea()
+    }
+    
+    var content: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Spacer()
+            
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Dr. Paw")
+                    .font(.system(
+                        size: 42,
+                        weight: .bold,
+                        design: .rounded
+                    ))
+                    .foregroundStyle(Color.appTextPrimary)
+                
+                Text("Care and services for your pets.\nHelping your pets stay happy\nand safe.")
+                    .font(.system(
+                        size: 18,
+                        weight: .medium,
+                        design: .rounded
+                    ))
+                    .foregroundStyle(Color.appTextSecondary)
+                    .lineSpacing(4)
+            }
+            
+            Spacer()
+            Spacer()
+            Spacer()
+            
+            buttons
+            
+            Spacer()
+                .frame(height: 30)
+        }
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    var buttons: some View {
+        VStack(spacing: 14) {
+            NavigationLink(destination: LoginView()) {
+                Text("Log In")
+                    .font(.system(
+                        size: 17,
+                        weight: .bold,
+                        design: .rounded
+                    ))
+                    .foregroundStyle(Color.appOnBrand)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
+                    .background(Color.appBrand)
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 18)
+                    )
+                    .shadow(
+                        color: Color.appElevatedShadow,
+                        radius: 10,
+                        x: 0,
+                        y: 5
+                    )
+            }
+            
+            NavigationLink(destination: SignUpView()) {
+                Text("Sign Up")
+                    .font(.system(
+                        size: 17,
+                        weight: .bold,
+                        design: .rounded
+                    ))
+                    .foregroundStyle(Color.appBrand)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
+                    .background(Color.appSurface)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 18)
+                            .stroke(
+                                Color.appBrand,
+                                lineWidth: 1.5
+                            )
+                    }
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 18)
+                    )
+            }
+        }
+        .frame(maxWidth: 320)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Preview
 
 #Preview {
     SplashScreen()

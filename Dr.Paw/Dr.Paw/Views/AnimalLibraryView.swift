@@ -3,6 +3,9 @@
 //  Dr.Paw
 //  Created by Adityasinh on 06/07/26.
 //
+//  UI PASS: restyled to the new neutral appBackground/appSurface/appBrand
+//  palette (see ColorExtension.swift) instead of the old hardcoded hex
+//  colors. Grid layout, navigation, and detail screen structure unchanged.
 //
 
 import SwiftUI
@@ -20,7 +23,7 @@ struct AnimalLibraryView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "#F7F4F8")
+                Color.appBackground
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -66,15 +69,16 @@ struct AnimalCardView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(animal.name)
                     .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.appTextPrimary)
                 Text(animal.species)
                     .font(.caption)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.appTextSecondary)
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(.white)
+        .background(Color.appSurface)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 4)
         .frame(maxWidth:180)
@@ -88,17 +92,17 @@ struct AnimalCardView: View {
                 .scaledToFill()
         } else {
             ZStack {
-                Color(hex: "#6D4093").opacity(0.15)
+                Color.appBrand.opacity(0.15)
                 Image(systemName: iconForCategory(animal.category))
                     .font(.system(size: 30))
-                    .foregroundStyle(Color(hex: "#6D4093"))
+                    .foregroundStyle(Color.appBrand)
             }
         }
     }
 
     private var categoryBadge: some View {
         Circle()
-            .fill(Color(hex: "#F79E1B"))
+            .fill(Color.appAccent)
             .frame(width: 26, height: 26)
             .overlay(
                 Image(systemName: iconForCategory(animal.category))
@@ -135,9 +139,9 @@ struct AnimalDetailView: View {
             .padding(.top, 8)
             .padding(.bottom, 110)
         }
-        .background(Color(hex: "#F7F4F8"))
+        .background(Color.appBackground)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color(hex: "#F7F4F8"), for: .navigationBar)
+        .toolbarBackground(Color.appBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
     }
 
@@ -145,7 +149,7 @@ struct AnimalDetailView: View {
         VStack(alignment: .leading, spacing: 7) {
             Text(animal.name)
                 .font(.system(size: 32, weight: .bold, design: .rounded))
-                .foregroundStyle(Color(hex: "#3B2450"))
+                .foregroundStyle(Color.appTextPrimary)
 
             HStack(spacing: 8) {
                 Image(systemName: iconForCategory(animal.category))
@@ -154,7 +158,7 @@ struct AnimalDetailView: View {
                 Text(animal.species)
             }
             .font(.subheadline.weight(.medium))
-            .foregroundStyle(Color(hex: "#6D4093"))
+            .foregroundStyle(Color.appAccent)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -177,7 +181,7 @@ struct AnimalDetailView: View {
                     )
             } else {
                 LinearGradient(
-                    colors: [Color(hex: "#6D4093"), Color(hex: "#F79E1B")],
+                    colors: [Color.appBrand, Color.appAccent],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -203,18 +207,18 @@ struct AnimalDetailView: View {
         .frame(maxWidth: .infinity)
         .frame(height: 270)
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .shadow(color: Color(hex: "#3B2450").opacity(0.18), radius: 14, x: 0, y: 8)
+        .shadow(color: Color.appBrand.opacity(0.18), radius: 14, x: 0, y: 8)
     }
 
     private var careDetails: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Everyday care")
                 .font(.title3.weight(.bold))
-                .foregroundStyle(Color(hex: "#3B2450"))
+                .foregroundStyle(Color.appTextPrimary)
 
-            DetailRow(title: "Best environment", detail: animal.idealEnvironment, icon: "house.fill", tint: Color(hex: "#6D4093"))
-            DetailRow(title: "Best food", detail: animal.bestFood, icon: "leaf.fill", tint: Color(hex: "#3E8A5B"))
-            DetailRow(title: "Foods to avoid", detail: animal.foodToAvoid, icon: "exclamationmark.triangle.fill", tint: Color(hex: "#CE5A57"))
+            DetailRow(title: "Best environment", detail: animal.idealEnvironment, icon: "house.fill", tint: .blue)
+            DetailRow(title: "Best food", detail: animal.bestFood, icon: "leaf.fill", tint: .green)
+            DetailRow(title: "Foods to avoid", detail: animal.foodToAvoid, icon: "exclamationmark.triangle.fill", tint: .orange)
         }
     }
 
@@ -222,22 +226,28 @@ struct AnimalDetailView: View {
         HStack(alignment: .top, spacing: 13) {
             Image(systemName: "lightbulb.fill")
                 .font(.title3)
-                .foregroundStyle(Color(hex: "#A56800"))
+                .foregroundStyle(.yellow)
                 .frame(width: 36, height: 36)
-                .background(Color(hex: "#FDE8B8"), in: Circle())
+                .background(Color.yellow.opacity(0.18), in: Circle())
 
             VStack(alignment: .leading, spacing: 5) {
                 Text("Dr. Paw's tip")
                     .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Color(hex: "#754A00"))
+                    .foregroundStyle(Color.appTextPrimary)
                 Text(animal.specificTip)
                     .font(.subheadline)
-                    .foregroundStyle(Color(hex: "#5B4A2C"))
+                    .foregroundStyle(Color.appTextSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(16)
-        .background(Color(hex: "#FFF7DE"))
+        .background(
+            LinearGradient(
+                colors: [Color.yellow.opacity(0.14), Color.appSurface],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 }
@@ -252,23 +262,23 @@ private struct DetailRow: View {
         HStack(alignment: .top, spacing: 13) {
             Image(systemName: icon)
                 .font(.subheadline.weight(.bold))
-                .foregroundStyle(tint)
+                .foregroundStyle(.white)
                 .frame(width: 36, height: 36)
-                .background(tint.opacity(0.13), in: Circle())
+                .background(tint, in: Circle())
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Color(hex: "#3B2450"))
+                    .foregroundStyle(Color.appTextPrimary)
                 Text(detail)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.appTextSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.white)
+        .background(Color.appSurface)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.04), radius: 7, x: 0, y: 3)
     }

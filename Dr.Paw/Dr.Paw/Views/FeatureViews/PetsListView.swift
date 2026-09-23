@@ -4,15 +4,8 @@
 //
 //  Created by Adityasinh on 08/09/26.
 //
-//
-//  PetsListView.swift
-//  Dr.Paw
-//
-//  Created by Adityasinh on 10/09/26.
-//
 import SwiftUI
 import CoreData
-
 
 struct PetsListView: View {
 
@@ -25,84 +18,36 @@ struct PetsListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                background
 
-                LinearGradient(
-                    colors: [Color(hex: "#F9E7C8"), Color(hex: "#ECE9E7")],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-
-                VStack(spacing: 24) {
-
-                    HStack {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "arrow.left")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(.black)
-                                .frame(width: 44, height: 44)
-                                .liquidGlass(in: Circle())
-                        }
-
-                        Spacer()
-
-                        Text("Pets List")
-                            .font(.system(size: 22, weight: .bold))
-
-                        Spacer()
-
-                        Button {
-                            showAddPetSheet = true
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(.black)
-                                .frame(width: 44, height: 44)
-                                .liquidGlass(in: Circle())
-                        }
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 8)
+                VStack(spacing: 0) {
+                    header
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
 
                     if petStore.pets.isEmpty {
                         Spacer()
-
-                        VStack(spacing: 14) {
-                            Image(systemName: "pawprint.fill")
-                                .font(.system(size: 42))
-                                .foregroundStyle(Color(hex: "#6D4093"))
-
-                            Text("No pets added yet")
-                                .font(.headline)
-
-                            Text("Tap + to add your first pet.")
-                                .font(.subheadline)
-                                .foregroundStyle(.gray)
-                        }
-
+                        emptyState
                         Spacer()
                     } else {
-                        ScrollView {
+                        ScrollView(showsIndicators: false) {
                             VStack(spacing: 14) {
                                 ForEach(petStore.pets) { pet in
                                     PetRowCard(pet: pet, isSelected: pet.isSelected) {
                                         petStore.select(pet)
-                                    }onEdit: {
+                                    } onEdit: {
                                         petBeingEdited = pet
-                                    }
-                                    onDelete: {
+                                    } onDelete: {
                                         petStore.delete(pet)
                                     }
                                 }
                             }
-                            .padding(.horizontal)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 20)
+                            .padding(.bottom, 40)
                         }
                     }
-
                 }
-
             }
             .navigationBarBackButtonHidden(true)
             .sheet(isPresented: $showAddPetSheet) {
@@ -112,6 +57,88 @@ struct PetsListView: View {
                 PetFormView(existingPet: pet)
             }
         }
+    }
+
+    // MARK: - Background
+
+    private var background: some View {
+        ZStack {
+            Color.appBackground
+                .ignoresSafeArea()
+
+            Circle()
+                .fill(Color.appAccent.opacity(0.18))
+                .frame(width: 240, height: 240)
+                .blur(radius: 35)
+                .offset(x: 140, y: -300)
+
+            Circle()
+                .fill(Color.appBrand.opacity(0.12))
+                .frame(width: 220, height: 220)
+                .blur(radius: 35)
+                .offset(x: -140, y: 380)
+        }
+    }
+
+    // MARK: - Header
+
+    private var header: some View {
+        HStack {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "arrow.left")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.appTextPrimary)
+                    .frame(width: 40, height: 40)
+                    .background(Color.appSurface)
+                    .clipShape(Circle())
+                    .shadow(color: .black.opacity(0.05), radius: 6, y: 3)
+            }
+
+            Spacer()
+
+            Text("Pets List")
+                .font(.system(size: 19, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.appTextPrimary)
+
+            Spacer()
+
+            Button {
+                showAddPetSheet = true
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.appOnBrand)
+                    .frame(width: 40, height: 40)
+                    .background(Color.appBrand)
+                    .clipShape(Circle())
+                    .shadow(color: Color.appBrand.opacity(0.3), radius: 8, y: 4)
+            }
+        }
+    }
+
+    // MARK: - Empty state
+
+    private var emptyState: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "pawprint.fill")
+                .font(.system(size: 42))
+                .foregroundStyle(Color.appAccent)
+
+            Text("No pets added yet")
+                .font(.system(size: 17, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.appTextPrimary)
+
+            Text("Tap + to add your first pet.")
+                .font(.subheadline)
+                .foregroundStyle(Color.appTextSecondary)
+        }
+        .padding(.vertical, 38)
+        .padding(.horizontal, 30)
+        .background(Color.appSurface)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .padding(.horizontal, 40)
     }
 }
 
@@ -138,32 +165,35 @@ private struct PetRowCard: View {
                             .scaledToFill()
                             .frame(width: 52, height: 52)
                             .clipShape(Circle())
+                            .overlay(
+                                Circle().stroke(Color.appBorder, lineWidth: 1)
+                            )
                     } else {
                         ZStack {
                             Circle()
-                                .fill(Color(hex: "#6D4093").opacity(0.15))
+                                .fill(Color.appAccent.opacity(0.16))
                                 .frame(width: 52, height: 52)
 
                             Image(systemName: "pawprint.fill")
-                                .foregroundStyle(Color(hex: "#6D4093"))
+                                .foregroundStyle(Color.appAccent)
                         }
                     }
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(pet.name ?? "Unnamed")
                             .font(.system(size: 17, weight: .semibold))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color.appTextPrimary)
 
                         Text([pet.species, pet.breed].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · "))
                             .font(.subheadline)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color.appTextSecondary)
                     }
 
                     Spacer()
 
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(Color(hex: "#F79E1B"))
+                            .foregroundStyle(Color.appAccent)
                             .font(.title3)
                     }
 
@@ -185,18 +215,19 @@ private struct PetRowCard: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.appTextSecondary)
                     .frame(width: 30, height: 30)
             }
 
         }
         .padding(14)
-        .background(.white)
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .background(Color.appSurface)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(isSelected ? Color(hex: "#F79E1B") : Color.clear, lineWidth: 2)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(isSelected ? Color.appAccent : Color.appBorder.opacity(0.5), lineWidth: isSelected ? 2 : 1)
         )
+        .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
     }
 }
 
