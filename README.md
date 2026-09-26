@@ -128,7 +128,7 @@ Some features I would like to explore in future versions include:
 
 A complete walkthrough of Dr.Paw is available on YouTube:
 
-**[▶️ Watch the Dr.Paw Demo]((https://youtu.be/tbNcSmU61iU))**
+**[▶️ Watch the Dr.Paw Demo](https://youtu.be/tbNcSmU61iU)**
 
 ---
 
