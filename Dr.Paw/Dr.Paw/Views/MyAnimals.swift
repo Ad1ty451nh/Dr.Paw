@@ -6,27 +6,33 @@
 //
 
 import SwiftUI
+import Charts
 
 struct MyAnimals: View {
 
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.scenePhase) private var scenePhase
-    @EnvironmentObject var petStore: PetStore
-
-    @StateObject private var timerManager = PetTimeActivityManager.shared
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var petStore: PetStore
 
     var body: some View {
+
         ZStack {
+
             screenBackground
 
             VStack(spacing: 0) {
+
                 header
 
                 if petStore.pets.isEmpty {
+
                     emptyState
+
                 } else {
+
                     ScrollView(showsIndicators: false) {
+
                         VStack(spacing: 16) {
+
                             activePetsHeader
 
                             ForEach(
@@ -34,22 +40,9 @@ struct MyAnimals: View {
                                 id: \.objectID
                             ) { pet in
 
-                                VStack(alignment: .leading, spacing: 10) {
-
-                                    NavigationLink {
-                                        PetDetailsView(pet: pet)
-                                    } label: {
-                                        animalRow(pet)
-                                    }
-                                    .buttonStyle(.plain)
-
-                                    if let petID = pet.id?.uuidString {
-                                        timerControls(
-                                            for: pet,
-                                            petID: petID
-                                        )
-                                    }
-                                }
+                                PetCompanionCard(
+                                    pet: pet
+                                )
                             }
                         }
                         .padding(.horizontal, 20)
@@ -60,20 +53,14 @@ struct MyAnimals: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .onAppear {
-            timerManager.refresh()
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active {
-                timerManager.refresh()
-            }
-        }
     }
 
     // MARK: - Background
 
     private var screenBackground: some View {
+
         ZStack {
+
             Color.appBackground
                 .ignoresSafeArea()
 
@@ -94,34 +81,16 @@ struct MyAnimals: View {
     // MARK: - Header
 
     private var header: some View {
+
         HStack(spacing: 14) {
-
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(Color.appTextPrimary)
-                    .frame(width: 44, height: 44)
-                    .background(Color.appSurface)
-                    .clipShape(Circle())
-                    .overlay {
-                        Circle()
-                            .stroke(
-                                Color.appBorder,
-                                lineWidth: 1
-                            )
-                    }
-            }
-            .buttonStyle(.plain)
-
+            
             VStack(alignment: .leading, spacing: 3) {
-
-                Text("YOUR COMPANIONS")
+                
+                Text(" YOUR COMPANIONS")
                     .font(.caption.weight(.bold))
                     .tracking(1.3)
                     .foregroundStyle(Color.appAccent)
-
+                
                 Text("My Animals")
                     .font(
                         .system(
@@ -132,27 +101,19 @@ struct MyAnimals: View {
                     )
                     .foregroundStyle(Color.appTextPrimary)
             }
-
-            Spacer()
-
-            Image(systemName: "pawprint.fill")
-                .font(.title3.weight(.bold))
-                .foregroundStyle(Color.appAccent)
-                .frame(width: 44, height: 44)
-                .background(Color.appBlush)
-                .clipShape(Circle())
+            
+            
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 14)
-        .padding(.bottom, 8)
     }
 
     // MARK: - Active Pets Header
 
     private var activePetsHeader: some View {
+
         HStack {
 
             VStack(alignment: .leading, spacing: 4) {
+
                 Text("MY PETS")
                     .font(.caption.weight(.bold))
                     .tracking(1.2)
@@ -160,7 +121,11 @@ struct MyAnimals: View {
 
                 Text(
                     "\(petStore.pets.count) "
-                    + (petStore.pets.count == 1 ? "companion" : "companions")
+                    + (
+                        petStore.pets.count == 1
+                        ? "companion"
+                        : "companions"
+                    )
                 )
                 .font(
                     .system(
@@ -187,11 +152,13 @@ struct MyAnimals: View {
     // MARK: - Empty State
 
     private var emptyState: some View {
+
         VStack(spacing: 18) {
 
             Spacer()
 
             ZStack {
+
                 Circle()
                     .fill(Color.appBlush)
                     .frame(width: 100, height: 100)
@@ -231,15 +198,119 @@ struct MyAnimals: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
     }
+}
 
-    // MARK: - Animal Row
+// MARK: - Growth Point
 
-    private func animalRow(_ pet: Pet) -> some View {
+private struct GrowthPoint: Identifiable {
+
+    let id: UUID
+    let date: Date
+    let value: Double
+}
+
+// MARK: - Pet Companion Card
+
+private struct PetCompanionCard: View {
+
+    let pet: Pet
+
+    @State private var isExpanded = false
+
+    @FetchRequest private var weightEntries:
+        FetchedResults<WeightEntry>
+
+    @FetchRequest private var heightEntries:
+        FetchedResults<HeightEntry>
+
+    init(pet: Pet) {
+
+        self.pet = pet
+
+        _weightEntries = FetchRequest(
+            sortDescriptors: [
+                NSSortDescriptor(
+                    keyPath: \WeightEntry.date,
+                    ascending: true
+                )
+            ],
+            predicate: NSPredicate(
+                format: "pet == %@",
+                pet
+            ),
+            animation: .default
+        )
+
+        _heightEntries = FetchRequest(
+            sortDescriptors: [
+                NSSortDescriptor(
+                    keyPath: \HeightEntry.date,
+                    ascending: true
+                )
+            ],
+            predicate: NSPredicate(
+                format: "pet == %@",
+                pet
+            ),
+            animation: .default
+        )
+    }
+
+    var body: some View {
+
+        VStack(alignment: .leading, spacing: 0) {
+
+            cardHeader
+
+            if isExpanded {
+
+                growthSection
+                    .padding(.top, 14)
+                    .transition(
+                        .opacity.combined(
+                            with: .move(edge: .top)
+                        )
+                    )
+            }
+        }
+        .padding(15)
+        .background(Color.appSurface)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: 24,
+                style: .continuous
+            )
+        )
+        .overlay {
+
+            RoundedRectangle(
+                cornerRadius: 24,
+                style: .continuous
+            )
+            .stroke(
+                Color.appBorder.opacity(0.45),
+                lineWidth: 1
+            )
+        }
+        .shadow(
+            color: Color.appElevatedShadow,
+            radius: 10,
+            y: 5
+        )
+    }
+
+    // MARK: - Card Header
+
+    private var cardHeader: some View {
+
         HStack(spacing: 14) {
 
-            petImage(pet)
+            petImage
 
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(
+                alignment: .leading,
+                spacing: 5
+            ) {
 
                 Text(pet.name ?? "Unnamed")
                     .font(
@@ -260,58 +331,272 @@ struct MyAnimals: View {
                 .joined(separator: " · ")
 
                 if !details.isEmpty {
+
                     Text(details)
                         .font(.subheadline)
                         .foregroundStyle(Color.appTextSecondary)
                         .lineLimit(1)
                 }
 
-                HStack(spacing: 5) {
-                    Image(systemName: "chevron.right")
-                    Text("View profile")
+                Button {
+
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        isExpanded.toggle()
+                    }
+
+                } label: {
+
+                    HStack(spacing: 5) {
+
+                        Image(
+                            systemName:
+                                isExpanded
+                                ? "chevron.up"
+                                : "chart.xyaxis.line"
+                        )
+
+                        Text(
+                            isExpanded
+                            ? "Hide growth graphs"
+                            : "View growth graphs"
+                        )
+                    }
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Color.appAccent)
                 }
-                .font(.caption.weight(.bold))
-                .foregroundStyle(Color.appAccent)
+                .buttonStyle(.plain)
             }
 
             Spacer()
 
-            Image(systemName: "chevron.right")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(Color.appTextSecondary)
-                .frame(width: 34, height: 34)
-                .background(Color.appBackground)
-                .clipShape(Circle())
+            NavigationLink {
+
+                PetDetailsView(pet: pet)
+
+            } label: {
+
+                Image(systemName: "chevron.right")
+                    .font(
+                        .system(
+                            size: 13,
+                            weight: .bold
+                        )
+                    )
+                    .foregroundStyle(Color.appTextSecondary)
+                    .frame(width: 34, height: 34)
+                    .background(Color.appBackground)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
         }
-        .padding(15)
-        .background(Color.appSurface)
+    }
+
+    // MARK: - Growth Section
+
+    private var growthSection: some View {
+
+        VStack(spacing: 12) {
+
+            miniChartCard(
+                title: "Weight",
+                unit: "kg",
+                icon: "scalemass.fill",
+                tint: Color.appBrand,
+                points: weightEntries.compactMap { entry in
+
+                    guard let date = entry.date else {
+                        return nil
+                    }
+
+                    return GrowthPoint(
+                        id: entry.id ?? UUID(),
+                        date: date,
+                        value: entry.valueKg
+                    )
+                }
+            )
+
+            miniChartCard(
+                title: "Height",
+                unit: "cm",
+                icon: "arrow.up.and.down",
+                tint: Color.appAccent,
+                points: heightEntries.compactMap { entry in
+
+                    guard let date = entry.date else {
+                        return nil
+                    }
+
+                    return GrowthPoint(
+                        id: entry.id ?? UUID(),
+                        date: date,
+                        value: entry.valueCm
+                    )
+                }
+            )
+        }
+    }
+
+    // MARK: - Mini Chart
+
+    private func miniChartCard(
+        title: String,
+        unit: String,
+        icon: String,
+        tint: Color,
+        points: [GrowthPoint]
+    ) -> some View {
+
+        VStack(
+            alignment: .leading,
+            spacing: 10
+        ) {
+
+            HStack(spacing: 8) {
+
+                Image(systemName: icon)
+                    .font(
+                        .system(
+                            size: 13,
+                            weight: .semibold
+                        )
+                    )
+                    .foregroundStyle(tint)
+
+                Text("\(title) progress")
+                    .font(
+                        .system(
+                            size: 13,
+                            weight: .bold,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(Color.appTextPrimary)
+
+                Spacer()
+
+                if let latest = points.last?.value {
+
+                    Text(
+                        String(
+                            format: "%.1f \(unit)",
+                            latest
+                        )
+                    )
+                    .font(
+                        .system(
+                            size: 13,
+                            weight: .bold,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(tint)
+                }
+            }
+
+            if points.isEmpty {
+
+                Text(
+                    "No \(title.lowercased()) records yet"
+                )
+                .font(.caption)
+                .foregroundStyle(Color.appTextSecondary)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .padding(.vertical, 18)
+
+            } else {
+
+                Chart(points) { point in
+
+                    LineMark(
+                        x: .value(
+                            "Date",
+                            point.date
+                        ),
+                        y: .value(
+                            unit,
+                            point.value
+                        )
+                    )
+                    .foregroundStyle(tint)
+                    .lineStyle(
+                        StrokeStyle(
+                            lineWidth: 2.5,
+                            lineCap: .round,
+                            lineJoin: .round
+                        )
+                    )
+                    .interpolationMethod(.catmullRom)
+
+                    PointMark(
+                        x: .value(
+                            "Date",
+                            point.date
+                        ),
+                        y: .value(
+                            unit,
+                            point.value
+                        )
+                    )
+                    .foregroundStyle(tint)
+                    .symbolSize(22)
+                }
+                .chartXAxis {
+
+                    AxisMarks(
+                        values: .automatic(
+                            desiredCount: 3
+                        )
+                    ) { _ in
+
+                        AxisGridLine()
+                            .foregroundStyle(
+                                Color.appBorder.opacity(0.5)
+                            )
+
+                        AxisValueLabel()
+                            .foregroundStyle(
+                                Color.appTextSecondary
+                            )
+                            .font(.caption2)
+                    }
+                }
+                .chartYAxis {
+
+                    AxisMarks { _ in
+
+                        AxisGridLine()
+                            .foregroundStyle(
+                                Color.appBorder.opacity(0.5)
+                            )
+
+                        AxisValueLabel()
+                            .foregroundStyle(
+                                Color.appTextSecondary
+                            )
+                            .font(.caption2)
+                    }
+                }
+                .frame(height: 110)
+            }
+        }
+        .padding(12)
+        .background(Color.appBackground)
         .clipShape(
             RoundedRectangle(
-                cornerRadius: 24,
+                cornerRadius: 16,
                 style: .continuous
             )
-        )
-        .overlay {
-            RoundedRectangle(
-                cornerRadius: 24,
-                style: .continuous
-            )
-            .stroke(
-                Color.appBorder.opacity(0.45),
-                lineWidth: 1
-            )
-        }
-        .shadow(
-            color: Color.appElevatedShadow,
-            radius: 10,
-            y: 5
         )
     }
 
     // MARK: - Pet Image
 
     @ViewBuilder
-    private func petImage(_ pet: Pet) -> some View {
+    private var petImage: some View {
 
         if let photoData = pet.photoData,
            let uiImage = UIImage(data: photoData) {
@@ -319,7 +604,10 @@ struct MyAnimals: View {
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 68, height: 68)
+                .frame(
+                    width: 68,
+                    height: 68
+                )
                 .clipShape(
                     RoundedRectangle(
                         cornerRadius: 20,
@@ -330,6 +618,7 @@ struct MyAnimals: View {
         } else {
 
             ZStack {
+
                 LinearGradient(
                     colors: [
                         Color.appBrand,
@@ -343,7 +632,10 @@ struct MyAnimals: View {
                     .font(.title2.weight(.bold))
                     .foregroundStyle(Color.appOnBrand)
             }
-            .frame(width: 68, height: 68)
+            .frame(
+                width: 68,
+                height: 68
+            )
             .clipShape(
                 RoundedRectangle(
                     cornerRadius: 20,
@@ -352,116 +644,12 @@ struct MyAnimals: View {
             )
         }
     }
-
-    // MARK: - Timer Controls
-
-    private func timerControls(
-        for pet: Pet,
-        petID: String
-    ) -> some View {
-
-        let timer = timerManager.timer(for: petID)
-        let canStart = timerManager.canStartTimer(for: petID)
-
-        return HStack(spacing: 8) {
-
-            timerButton(
-                title: "Start",
-                icon: "play.fill",
-                isProminent: true
-            ) {
-                timerManager.start(
-                    petID: petID,
-                    petName: pet.name ?? "Unnamed",
-                    breed: pet.breed ?? pet.species ?? ""
-                )
-            }
-            .disabled(!canStart)
-
-            timerButton(
-                title: timer?.isPaused == true
-                    ? "Resume"
-                    : "Pause",
-                icon: timer?.isPaused == true
-                    ? "play.fill"
-                    : "pause.fill",
-                isProminent: false
-            ) {
-                if timer?.isPaused == true {
-                    timerManager.resume(petID: petID)
-                } else {
-                    timerManager.pause(petID: petID)
-                }
-            }
-            .disabled(timer == nil)
-
-            timerButton(
-                title: "Stop",
-                icon: "stop.fill",
-                isProminent: false
-            ) {
-                timerManager.stop(petID: petID)
-            }
-            .disabled(timer == nil)
-
-            Spacer(minLength: 0)
-
-            if timerManager.timers.count >=
-                PetTimeActivityManager.maximumConcurrentActivities,
-               timer == nil {
-
-                Text("3 active")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color.appTextSecondary)
-            }
-        }
-        .padding(.horizontal, 4)
-    }
-
-    // MARK: - Timer Button
-
-    private func timerButton(
-        title: String,
-        icon: String,
-        isProminent: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-
-        Button(action: action) {
-            HStack(spacing: 5) {
-                Image(systemName: icon)
-                Text(title)
-            }
-            .font(.caption.weight(.bold))
-            .foregroundStyle(
-                isProminent
-                ? Color.appOnBrand
-                : Color.appTextPrimary
-            )
-            .padding(.horizontal, 12)
-            .frame(height: 36)
-            .background(
-                isProminent
-                ? Color.appBrand
-                : Color.appSurface
-            )
-            .clipShape(Capsule())
-            .overlay {
-                if !isProminent {
-                    Capsule()
-                        .stroke(
-                            Color.appBorder,
-                            lineWidth: 1
-                        )
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
 }
 
 #Preview {
+
     NavigationStack {
+
         MyAnimals()
             .environmentObject(
                 PetStore(

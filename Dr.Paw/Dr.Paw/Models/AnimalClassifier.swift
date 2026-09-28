@@ -7,6 +7,15 @@
 //  The full two-stage Vision + CoreML pipeline, ported from CoreMLSandbox.
 //  Reports its result through a completion closure since this is a plain
 //  service now, not View code — no @State to write into directly.
+//
+//  FIX (24/09/26): VNImageRequestHandler.perform(_:) is a synchronous,
+//  blocking call — it was previously being invoked directly on the main
+//  thread from ScanResultView's onAppear, which froze the entire UI for
+//  the whole duration of model loading + inference (no nav bar, no
+//  spinner, nothing could render). Everything now runs on a background
+//  queue; completion still fires on whatever thread the caller dispatches
+//  from, so callers must hop back to main themselves (ScanResultView
+//  already does this).
 
 import Foundation
 import Vision
@@ -22,61 +31,64 @@ enum AnimalClassifier {
     /// Runs the full pipeline on a captured photo.
     /// completion gives back (rawLabel, confidence). rawLabel is nil when
     /// nothing could be classified confidently — check that first.
+    /// Runs entirely off the main thread — safe to call from onAppear.
     static func classify(_ image: UIImage, completion: @escaping (String?, Float) -> Void) {
-        guard let ciImage = CIImage(image: image) else {
-            completion(nil, 0)
-            return
-        }
-
-        let config = MLModelConfiguration()
-        config.computeUnits = .all
-
-        // STAGE 1: Species classification (Dogs / Cats / Birds / FarmAnimals / Rodents / Turtles / NotAnAnimal)
-        guard let speciesModel = try? SpeciesClassifier_(configuration: config).model,
-              let visionSpeciesModel = try? VNCoreMLModel(for: speciesModel) else {
-            completion(nil, 0)
-            return
-        }
-
-        let speciesRequest = VNCoreMLRequest(model: visionSpeciesModel) { request, error in
-            guard error == nil,
-                  let results = request.results as? [VNClassificationObservation],
-                  let topSpecies = results.first else {
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let ciImage = CIImage(image: image) else {
                 completion(nil, 0)
                 return
             }
 
-            guard topSpecies.confidence > confidenceThreshold else {
-                // Not confident enough — treat as "couldn't identify"
-                completion(nil, topSpecies.confidence)
+            let config = MLModelConfiguration()
+            config.computeUnits = .all
+
+            // STAGE 1: Species classification (Dogs / Cats / Birds / FarmAnimals / Rodents / Turtles / NotAnAnimal)
+            guard let speciesModel = try? SpeciesClassifier_(configuration: config).model,
+                  let visionSpeciesModel = try? VNCoreMLModel(for: speciesModel) else {
+                completion(nil, 0)
                 return
             }
 
-            switch topSpecies.identifier {
-            case "Dogs":
-                classifyDogBreed(ciImage: ciImage, config: config, completion: completion)
-            case "Cats":
-                classifyCatBreed(ciImage: ciImage, config: config, completion: completion)
-            case "Birds":
-                classifyBird(ciImage: ciImage, config: config, completion: completion)
-            case "FarmAnimals":
-                classifyFarmAnimal(ciImage: ciImage, config: config, completion: completion)
-            case "Rodents":
-                classifyRodent(ciImage: ciImage, config: config, completion: completion)
-            case "Turtles":
-                // No Stage 2 model exists — only one known reptile, report it directly
-                completion("Turtle", topSpecies.confidence)
-            default:
-                // NotAnAnimal, or anything unexpected
-                completion(nil, topSpecies.confidence)
-            }
-        }
+            let speciesRequest = VNCoreMLRequest(model: visionSpeciesModel) { request, error in
+                guard error == nil,
+                      let results = request.results as? [VNClassificationObservation],
+                      let topSpecies = results.first else {
+                    completion(nil, 0)
+                    return
+                }
 
-        let handler = VNImageRequestHandler(ciImage: ciImage, orientation: .up)
-        do {
-            try handler.perform([speciesRequest])
-        } catch {
-            completion(nil, 0)
+                guard topSpecies.confidence > confidenceThreshold else {
+                    // Not confident enough — treat as "couldn't identify"
+                    completion(nil, topSpecies.confidence)
+                    return
+                }
+
+                switch topSpecies.identifier {
+                case "Dogs":
+                    classifyDogBreed(ciImage: ciImage, config: config, completion: completion)
+                case "Cats":
+                    classifyCatBreed(ciImage: ciImage, config: config, completion: completion)
+                case "Birds":
+                    classifyBird(ciImage: ciImage, config: config, completion: completion)
+                case "FarmAnimals":
+                    classifyFarmAnimal(ciImage: ciImage, config: config, completion: completion)
+                case "Rodents":
+                    classifyRodent(ciImage: ciImage, config: config, completion: completion)
+                case "Turtles":
+                    // No Stage 2 model exists — only one known reptile, report it directly
+                    completion("Turtle", topSpecies.confidence)
+                default:
+                    // NotAnAnimal, or anything unexpected
+                    completion(nil, topSpecies.confidence)
+                }
+            }
+
+            let handler = VNImageRequestHandler(ciImage: ciImage, orientation: .up)
+            do {
+                try handler.perform([speciesRequest])
+            } catch {
+                completion(nil, 0)
+            }
         }
     }
 
@@ -84,6 +96,9 @@ enum AnimalClassifier {
     // Each function below is structurally identical to the ones in the
     // sandbox's ContentView — just pointed at a different model, and
     // reporting through completion(_:_:) instead of mutating resultText.
+    // These already run on the background queue dispatched from classify(_:),
+    // since VNCoreMLRequest's completion handler fires synchronously within
+    // that same perform() call — no additional dispatching needed here.
 
     private static func classifyDogBreed(ciImage: CIImage, config: MLModelConfiguration, completion: @escaping (String?, Float) -> Void) {
         guard let breedModel = try? DogBreedClassifier(configuration: config).model,

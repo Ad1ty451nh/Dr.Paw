@@ -13,6 +13,7 @@ struct ProfileScreenView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var session: UserSession
     @EnvironmentObject private var petStore: PetStore
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
     
     @State private var selectedPhoto: PhotosPickerItem?
     
@@ -26,6 +27,7 @@ struct ProfileScreenView: View {
     private let highlightColor = Color.appBrand
     private let avatarPlaceholder = Color.appAccent.opacity(0.15)
     private let iconTint = Color.appAccent
+    private let proGoldColor = Color(red: 0.83, green: 0.68, blue: 0.21)
     
     var body: some View {
         NavigationStack {
@@ -97,20 +99,29 @@ struct ProfileScreenView: View {
     private var identity: some View {
         VStack(spacing: 12) {
             ZStack(alignment: .bottomTrailing) {
-                profileImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 108, height: 108)
-                    .clipShape(Circle())
-                    .overlay {
-                        Circle()
-                            .stroke(highlightColor, lineWidth: 3)
+                ZStack(alignment: .topTrailing) {
+                    profileImage
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 108, height: 108)
+                        .clipShape(Circle())
+                        .overlay {
+                            Circle()
+                                .stroke(
+                                    subscriptionManager.isPro ? proGoldColor : highlightColor,
+                                    lineWidth: 3
+                                )
+                        }
+                        .shadow(
+                            color: accentColor.opacity(0.18),
+                            radius: 12,
+                            y: 6
+                        )
+                    
+                    if subscriptionManager.isPro {
+                        proCrownBadge
                     }
-                    .shadow(
-                        color: accentColor.opacity(0.18),
-                        radius: 12,
-                        y: 6
-                    )
+                }
                 
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
                     Image(systemName: "pencil")
@@ -132,13 +143,19 @@ struct ProfileScreenView: View {
             }
             
             VStack(spacing: 4) {
-                Text(
-                    session.nickname.isEmpty
-                    ? "Pet Parent"
-                    : session.nickname
-                )
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(titleColor)
+                HStack(spacing: 6) {
+                    Text(
+                        session.nickname.isEmpty
+                        ? "Pet Parent"
+                        : session.nickname
+                    )
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(titleColor)
+                    
+                    if subscriptionManager.isPro {
+                        proBadgeChip
+                    }
+                }
                 
                 Text(
                     session.email.isEmpty
@@ -151,6 +168,43 @@ struct ProfileScreenView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 4)
+    }
+    
+    // MARK: - Pro Badges
+    
+    private var proCrownBadge: some View {
+        Image(systemName: "crown.fill")
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(.white)
+            .padding(6)
+            .background(proGoldColor)
+            .clipShape(Circle())
+            .overlay {
+                Circle()
+                    .stroke(cardBackground, lineWidth: 2)
+            }
+            .shadow(
+                color: Color.appElevatedShadow,
+                radius: 3,
+                y: 1
+            )
+            .offset(x: 4, y: -4)
+    }
+    
+    private var proBadgeChip: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "crown.fill")
+                .font(.system(size: 10, weight: .bold))
+            
+            Text("PRO")
+                .font(.system(size: 12, weight: .bold))
+                .tracking(0.4)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(proGoldColor)
+        .clipShape(Capsule())
     }
     
     // MARK: - Stats
@@ -616,5 +670,6 @@ struct ActivityShareSheet: UIViewControllerRepresentable {
                     context: PersistenceController.shared.container.viewContext
                 )
             )
+            .environmentObject(SubscriptionManager())
     }
 }
