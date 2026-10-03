@@ -136,6 +136,8 @@ A complete walkthrough of Dr.Paw is available on YouTube:
 
 Dr.Paw was submitted as part of **Shipaton 2026**, exploring how modern mobile technologies and subscription infrastructure can be used to build a useful consumer application.
 
+Submitted for the **Next Gen Award** (student track).
+
 ---
 
 ## 👨‍💻 Developer
@@ -150,7 +152,9 @@ Interested in building useful and polished mobile applications with Swift, Swift
 
 ## 📄 License
 
-This project is currently intended primarily as a portfolio and learning project.
+This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
+
+You're free to use, modify, and distribute this code, including for commercial purposes, as long as the original copyright notice is retained.
 
 ---
 
